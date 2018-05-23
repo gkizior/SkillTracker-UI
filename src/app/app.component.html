@@ -3,4 +3,30 @@
   <h1>
     Welcome to {{ title }}!
   </h1>
+
+  <table>
+    <thead>
+      <th>empId</th>
+      <th>firstName</th>
+      <th>lastname</th>
+      <th>careerLevel</th>
+      <th>skill</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let d of data">
+        <td>{{d.empId}}</td>
+        <td>{{d.firstName}}</td>
+        <td>{{d.lastName}}</td>
+        <td>{{d.careerLevel}}</td>
+        <td>
+          <div *ngFor="let skill of d.skills">
+            {{skill}}
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
+
+<button (click)="delete()">Delete All</button>
+<button (click)="save()">Save</button>
