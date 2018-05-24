@@ -31,3 +31,8 @@ Mac OS X
 5. Install Yarn following instructions on https://yarnpkg.com/en/docs/install.
 6. Open terminal, go to the SkillTracker-UI directory and run command ``yarn install``.
 7. Open browser and go to http://localhost:4200
+
+
+# SkillTracker-App
+
+In order to run the UI download, install, and run https://github.com/gkizior/SkillTracker-app
