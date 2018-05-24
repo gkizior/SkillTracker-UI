@@ -1,0 +1,22 @@
+<h4 class="font-weight-bold py-3 mb-4">Employee</h4>
+<div *ngIf="enteredId">
+  <h5 *ngIf="enteredId">{{employee.firstName}} {{employee.lastName}}</h5>
+
+  <p>Employee Id: {{employee.empId}}</p>
+  <p>Career Level: {{employee.careerLevel}}</p>
+  <p>Skills:</p>
+  <tr *ngFor="let skill of employee.skills">{{skill}}</tr>
+
+</div>
+
+<div *ngIf="!enteredId">
+  <input (keyup.enter)="search()" id="searchBy" placeholder="Type Employee to search by">
+  <button class="btn btn-primary" (click)="search()">Search</button>
+
+  <div>
+    <tr *ngFor="let emp of employee">
+      <a href='/employee/{{emp.empId}}'>{{emp.firstName}} {{emp.lastName}}</a>
+    </tr>
+  </div>
+
+</div>
