@@ -1,0 +1,41 @@
+<h4 class="font-weight-bold py-3 mb-4">Home</h4>
+<p>This page is an example of basic layout. For more options use
+  <strong>Angular starter template generator</strong> in the docs.</p>
+<p>
+  <button class="btn btn-primary btn-lg">Button</button>
+</p>
+
+<div style="text-align:center">
+  <h1>
+    Welcome to {{ title }}!
+  </h1>
+
+  <table>
+    <thead>
+      <th>empId</th>
+      <th>firstName</th>
+      <th>lastname</th>
+      <th>careerLevel</th>
+      <th>skill</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let d of data">
+        <td>{{d.empId}}</td>
+        <td>{{d.firstName}}</td>
+        <td>{{d.lastName}}</td>
+        <td>{{d.careerLevel}}</td>
+        <td>
+          <div *ngFor="let skill of d.skills">
+            {{skill}}
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<input id="skillInput" placeholder="Type Skill to search by">
+<button (click)="search()">Search</button>
+
+<button (click)="delete()">Delete All</button>
+<button (click)="save()">Save</button>

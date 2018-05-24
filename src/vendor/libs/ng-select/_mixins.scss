@@ -1,0 +1,54 @@
+@import "~vendor/styles/_appwork/functions";
+
+@mixin ng-select-variant($background, $color: null) {
+  $color: if($color, $color, yiq($background));
+
+   > div > div.multiple > div.option {
+    background: $background !important;
+    color: $color !important;
+  }
+}
+
+@mixin ng-select-validation-state($state, $color) {
+  .is-#{$state} ng-select > div:not(.focus),
+  ng-select.is-#{$state} > div:not(.focus) {
+    border-color: $color !important;
+  }
+}
+
+@mixin ng-select-theme($background, $color: null) {
+  $color: if($color, $color, yiq($background));
+
+  ng-select > div.focus {
+    border-color: $background !important;
+  }
+
+  select-dropdown > div .options ul li.highlighted {
+    background: $background !important;
+    color: $color !important;
+  }
+
+  ng-select.ng-select-primary,
+  .ng-select-primary ng-select {
+    @include ng-select-variant($background, $color);
+  }
+}
+
+@mixin material-ng-select-theme($background, $color: null) {
+  $color: if($color, $color, yiq($background));
+
+  ng-select > div.focus {
+    border-color: $background !important;
+    box-shadow: 0 -1px 0 0 $background inset !important;
+  }
+
+  select-dropdown > div .options ul li.highlighted {
+    background: $background !important;
+    color: $color !important;
+  }
+
+  ng-select.ng-select-primary,
+  .ng-select-primary ng-select {
+    @include ng-select-variant($background, $color);
+  }
+}

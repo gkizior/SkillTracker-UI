@@ -1,67 +1,58 @@
 import { Component } from '@angular/core';
-import { Http, Response } from '@angular/http';
-import { map } from 'rxjs/operators';
+import {
+  Router,
+  Event as RouterEvent,
+  NavigationStart,
+  NavigationEnd,
+  NavigationCancel,
+  NavigationError
+} from '@angular/router';
+import { LayoutService } from './layout/layout.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styles: [':host { display: block; }']
 })
 export class AppComponent {
-  title = 'WMP Skill Tracker';
+  constructor(private router: Router, private layoutService: LayoutService) {
+    // Subscribe to router events to handle page transition
+    this.router.events.subscribe(this.navigationInterceptor.bind(this));
 
-  private apiUrl = 'http://localhost:8080';
-
-  data: any;
-
-  constructor(private http: Http) {
-    this.getAll();
-  }
-
-  search() {
-    const searchCriteria = (<HTMLInputElement>document.getElementById(
-      'skillInput'
-    )).value;
-    console.log(searchCriteria);
-    if (searchCriteria === '') {
-      return this.getAll();
+    // Disable animations and transitions in IE10 to increase performance
+    if (
+      typeof document['documentMode'] === 'number' &&
+      document['documentMode'] < 11
+    ) {
+      const style = document.createElement('style');
+      style.textContent =
+        '* { -ms-animation: none !important; animation: none !important; ' +
+        '-ms-transition: none !important; transition: none !important; }';
+      document.head.appendChild(style);
     }
-    return this.http
-      .get(this.apiUrl + '/get/' + searchCriteria)
-      .pipe(map((res: Response) => res.json()))
-      .subscribe(data => {
-        this.data = data;
-        console.log(this.data);
-      });
   }
 
-  getAll() {
-    return this.http
-      .get(this.apiUrl + '/getAll')
-      .pipe(map((res: Response) => res.json()))
-      .subscribe(data => {
-        this.data = data;
-        console.log(this.data);
-      });
-  }
+  private navigationInterceptor(e: RouterEvent) {
+    if (e instanceof NavigationStart) {
+      // Set loading state
+      document.body.classList.add('app-loading');
+    }
 
-  delete() {
-    return this.http
-      .get(this.apiUrl + '/delete')
-      .pipe(map((res: Response) => res.text()))
-      .subscribe(data => {
-        console.log(data);
-        this.getAll();
-      });
-  }
+    if (
+      e instanceof NavigationEnd ||
+      e instanceof NavigationCancel ||
+      e instanceof NavigationError
+    ) {
+      // On small screens collapse sidenav
+      if (
+        this.layoutService.isSmallScreen() &&
+        !this.layoutService.isCollapsed()
+      ) {
+        setTimeout(() => this.layoutService.setCollapsed(true, true), 10);
+      }
 
-  save() {
-    return this.http
-      .get(this.apiUrl + '/save')
-      .pipe(map((res: Response) => res.text()))
-      .subscribe(data => {
-        console.log(data);
-        this.getAll();
-      });
+      // Remove loading state
+      document.body.classList.remove('app-loading');
+    }
   }
 }

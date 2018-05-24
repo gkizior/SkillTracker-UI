@@ -1,7 +1,6 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
@@ -16,5 +15,15 @@
       "es2017",
       "dom"
     ]
-  }
+  },
+  "include": [
+    "./src",
+    "./node_modules/ng-autosize/index.ts",
+    "./node_modules/ng-autosize/src/autosize.directive.ts",
+    "./node_modules/ngx-markdown-editor/index.ts",
+    "./node_modules/ngx-markdown-editor/md-editor/md-editor.component.ts",
+    "./node_modules/ngx-quill/src/quill.module.ts",
+    "./node_modules/angular2-masonry/index.ts",
+    "./node_modules/ngx-image-gallery/index.ts"
+  ]
 }

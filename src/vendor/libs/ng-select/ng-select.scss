@@ -1,0 +1,429 @@
+@import '~vendor/styles/_custom-variables/libs';
+@import 'mixins';
+
+$ng-select-multiple-option-line-height: 1.5rem !default;
+
+// Single select
+
+:host /deep/ ng-select > div > div.single {
+  height: auto;
+
+   > div.value,
+   > div.placeholder {
+    text-overflow: ellipsis;
+  }
+
+   > div.clear,
+   > div.toggle {
+    display: flex;
+    align-items: center;
+    width: auto;
+    line-height: 1;
+
+    &:hover {
+      background: none;
+    }
+  }
+
+   > div.clear {
+    font-weight: 800;
+  }
+
+   > div.toggle {
+    font-size: 0;
+
+    &::before {
+      content: "";
+      display: block;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-color: transparent;
+    }
+  }
+}
+
+:host /deep/ ng-select > div:not(.open) > div.single > div.toggle::before {
+  border-width: .3125rem .25rem 0 .25rem;
+  border-top-color: inherit;
+}
+
+:host /deep/ ng-select > div.open > div.single > div.toggle::before {
+  border-width: 0 .25rem .3125rem .25rem;
+  border-bottom-color: inherit;
+}
+
+// Multiple select
+
+:host /deep/ ng-select > div > div.multiple {
+  input,
+   > div.option {
+    height: $ng-select-multiple-option-line-height;
+    line-height: $ng-select-multiple-option-line-height;
+  }
+
+   > div.option {
+    overflow: hidden;
+    padding: 0 .5rem;
+    max-width: 100%;
+    border: 0;
+    border-radius: .125rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: default;
+
+    span.deselect-option {
+      height: $ng-select-multiple-option-line-height;
+      color: inherit;
+      font-weight: bold;
+      line-height: $ng-select-multiple-option-line-height;
+      opacity: .5;
+
+      // Hide original close icon because it uses nonstandard unicode symbol
+      display: inline-block;
+      position: relative;
+      width: .6rem;
+      overflow: hidden;
+      text-indent: 2rem;
+      cursor: pointer;
+      vertical-align: top;
+
+      &::after {
+        content: "×";
+        position: absolute;
+        top: 50%;
+        right: 0;
+        left: 0;
+        display: block;
+        text-indent: 0;
+        line-height: 1;
+        transform: translateY(-50%);
+      }
+
+      &:hover,
+      &:focus {
+        color: inherit;
+        opacity: 1;
+      }
+    }
+  }
+}
+
+:host /deep/ ng-select > div.disabled > div.multiple > div.option {
+  opacity: .5;
+}
+
+.default-style :host /deep/ {
+  @import "~vendor/styles/_appwork/include";
+
+  $ng-select-multiple-option-spacer: px-to-rem(floor(rem-to-px(($input-height-inner - $ng-select-multiple-option-line-height) / 2)));
+
+  // Remove outline on desktops
+  @include media-breakpoint-up(md) {
+    ng-select > .focus,
+    ng-select input {
+      outline: 0;
+    }
+  }
+
+  ng-select * {
+    font-family: $font-family-base;
+  }
+
+  ng-select > div {
+    border: 1px solid $input-border-color;
+    background-color: $input-bg;
+    transition: $input-transition;
+
+    @include border-radius($border-radius);
+
+    &.open.below {
+      @include border-bottom-radius(0);
+    }
+
+    &.open.above {
+      @include border-top-radius(0);
+    }
+
+    &.disabled {
+      background: $input-disabled-bg;
+      color: $input-color;
+    }
+  }
+
+  // Single
+
+  ng-select > div > div.single {
+     > div.value,
+     > div.placeholder {
+      padding: $ng-select-multiple-option-spacer $input-padding-x;
+      line-height: $ng-select-multiple-option-line-height;
+    }
+
+     > div.placeholder {
+      color: $input-placeholder-color;
+    }
+
+     > div.clear,
+     > div.toggle {
+      padding-right: $input-padding-x;
+      color: $text-muted;
+    }
+
+     > div.clear {
+      font-size: $font-size-sm;
+
+      &:hover {
+        color: $body-color;
+      }
+    }
+  }
+
+  // Multiple
+
+  ng-select > div > div.multiple {
+    padding: 0 $ng-select-multiple-option-spacer $ng-select-multiple-option-spacer $ng-select-multiple-option-spacer;
+
+    input,
+     > div.option {
+      margin: $ng-select-multiple-option-spacer $ng-select-multiple-option-spacer 0 0;
+    }
+
+    input {
+      color: $input-color;
+
+      &::-moz-placeholder {
+        color: $input-placeholder-color;
+      }
+
+      &:-ms-input-placeholder {
+        color: $input-placeholder-color;
+      }
+
+      &::-webkit-input-placeholder {
+        color: $input-placeholder-color;
+      }
+    }
+
+     > div.option {
+      background-color: $badge-default-bg;
+      color: $body-color;
+      font-size: $font-size-base;
+    }
+  }
+
+  // Dropdown
+
+  select-dropdown > div {
+    z-index: $zindex-dropdown;
+    border-color: $dropdown-border-color;
+    background-clip: padding-box;
+    box-shadow: $floating-component-shadow;
+
+    &.below {
+      @include border-bottom-radius($border-radius);
+    }
+
+    &.above {
+      @include border-top-radius($border-radius);
+    }
+
+    .filter input {
+      border-color: $input-border-color;
+      color: $body-color;
+    }
+
+    .options ul li {
+      padding: $dropdown-padding-y $input-padding-x;
+      line-height: $dropdown-link-line-height;
+
+      &.selected {
+        background: $gray-100;
+      }
+    }
+  }
+
+  // States
+
+  @include ng-select-validation-state("valid", $form-feedback-valid-color);
+  @include ng-select-validation-state("invalid", $form-feedback-invalid-color);
+
+  // Variants
+
+  @each $color, $value in $theme-colors {
+    @if $color != primary {
+      .ng-select-#{$color} ng-select,
+      ng-select.ng-select-#{$color} {
+        @include ng-select-variant($value);
+      }
+    }
+  }
+}
+
+.default-style[dir=rtl] :host /deep/ ng-select > div {
+  @import "~vendor/styles/_appwork/include";
+
+  $ng-select-multiple-option-spacer: px-to-rem(floor(rem-to-px(($input-height-inner - $ng-select-multiple-option-line-height) / 2)));
+
+   > div.single > div.clear,
+   > div.single > div.toggle {
+    padding-right: 0;
+    padding-left: $input-padding-x;
+  }
+
+   > div.multiple input,
+   > div.multiple > div.option {
+    margin-right: 0;
+    margin-left: $ng-select-multiple-option-spacer;
+  }
+}
+
+.material-style :host /deep/ {
+  @import "~vendor/styles/_appwork/include-material";
+
+  $ng-select-multiple-option-spacer: px-to-rem(floor(rem-to-px(($input-height-inner - $ng-select-multiple-option-line-height) / 2)));
+
+  // Remove outline on desktops
+  @include media-breakpoint-up(md) {
+    ng-select > .focus,
+    ng-select input {
+      outline: 0;
+    }
+  }
+
+  ng-select * {
+    font-family: $font-family-base;
+  }
+
+  ng-select > div {
+    border: 0;
+    border-bottom: 1px solid $input-border-color;
+    background-color: $input-bg;
+    transition: $input-transition;
+
+    &.disabled {
+      background: $input-disabled-bg;
+      color: $input-color;
+    }
+  }
+
+  // Single
+
+  ng-select > div > div.single {
+     > div.value,
+     > div.placeholder {
+      padding: $ng-select-multiple-option-spacer 0 $ng-select-multiple-option-spacer 0;
+      line-height: $ng-select-multiple-option-line-height;
+    }
+
+     > div.placeholder {
+      color: $input-placeholder-color;
+    }
+
+     > div.clear,
+     > div.toggle {
+      color: $text-muted;
+    }
+
+     > div.clear {
+      padding-right: $input-padding-x;
+      font-size: $font-size-sm;
+
+      &:hover {
+        color: $body-color;
+      }
+    }
+  }
+
+  // Multiple
+
+  ng-select > div > div.multiple {
+    padding: 0 0 $ng-select-multiple-option-spacer 0;
+
+    input,
+     > div.option {
+      margin: $ng-select-multiple-option-spacer $ng-select-multiple-option-spacer 0 0;
+    }
+
+    input {
+      color: $input-color;
+
+      &::-moz-placeholder {
+        color: $input-placeholder-color;
+      }
+
+      &:-ms-input-placeholder {
+        color: $input-placeholder-color;
+      }
+
+      &::-webkit-input-placeholder {
+        color: $input-placeholder-color;
+      }
+    }
+
+     > div.option {
+      background-color: $badge-default-bg;
+      color: $body-color;
+      font-size: $font-size-base;
+    }
+  }
+
+  // Dropdown
+
+  select-dropdown > div {
+    z-index: $zindex-dropdown;
+    margin-top: $dropdown-spacer;
+    border: none;
+    background-clip: padding-box;
+    box-shadow: $floating-component-shadow;
+
+    @include border-radius($border-radius);
+
+    .filter input {
+      border-color: $input-border-color;
+      color: $body-color;
+    }
+
+    .options ul li {
+      padding: $dropdown-padding-y $input-padding-x;
+      line-height: $dropdown-link-line-height;
+
+      &.selected {
+        background: $gray-100;
+      }
+    }
+  }
+
+  // States
+
+  @include ng-select-validation-state("valid", $form-feedback-valid-color);
+  @include ng-select-validation-state("invalid", $form-feedback-invalid-color);
+
+  // Variants
+
+  @each $color, $value in $theme-colors {
+    @if $color != primary {
+      .ng-select-#{$color} ng-select,
+      ng-select.ng-select-#{$color} {
+        @include ng-select-variant($value);
+      }
+    }
+  }
+}
+
+.material-style[dir=rtl] :host /deep/ ng-select > div {
+  @import "~vendor/styles/_appwork/include-material";
+
+  $ng-select-multiple-option-spacer: px-to-rem(floor(rem-to-px(($input-height-inner - $ng-select-multiple-option-line-height) / 2)));
+
+   > div.single > div.clear {
+    padding-right: 0;
+    padding-left: $input-padding-x;
+  }
+
+   > div.multiple input,
+   > div.multiple > div.option {
+    margin-right: 0;
+    margin-left: $ng-select-multiple-option-spacer;
+  }
+}

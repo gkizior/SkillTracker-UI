@@ -1,0 +1,15 @@
+@import "~vendor/styles/_appwork/functions";
+
+@mixin ngx-datatable-theme($background, $color: null) {
+  $color: if($color, $color, yiq($background));
+
+  .ngx-datatable .datatable-pager ul li:not(.disabled).active a {
+    border-color: darken($background, 5%) !important;
+    background: $background !important;
+    color: $color !important;
+  }
+
+  .ngx-datatable .progress-linear .container {
+    background-color: $background !important;
+  }
+}
