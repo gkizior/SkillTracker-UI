@@ -13,6 +13,14 @@
   <input (keyup.enter)="search()" id="searchBy" placeholder="Type Employee to search by">
   <button class="btn btn-primary" (click)="search()">Search</button>
 
+  <br>
+  <button type="button" class="btn btn-info" (click)="open(defaultModal)">Add Employee</button>
+
+  <br>
+  <br>
+  <button class="btn btn-secondary" (click)="update()">Update Employee</button>
+
+
   <div>
     <tr *ngFor="let emp of employee">
       <a href='/employee/{{emp.empId}}'>{{emp.firstName}} {{emp.lastName}}</a>
@@ -20,3 +28,51 @@
   </div>
 
 </div>
+
+<ng-template #defaultModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h5 class="modal-title">
+      New
+      <span class="font-weight-light">Employee</span>
+      <br>
+      <small class="text-muted">Enter all of the below information</small>
+    </h5>
+    <button type="button" class="close" (click)="d('Cross click')">&times;</button>
+  </div>
+  <div class="modal-body">
+    <div class="form-row">
+      <div class="form-group col mb-0">
+        <label class="form-label">First Name</label>
+        <input [(ngModel)]="firstName" type="text" class="form-control" placeholder="Enter your First Name...">
+      </div>
+      <div class="form-group col mb-0">
+        <label class="form-label">Last Name</label>
+        <input [(ngModel)]="lastName" type="text" class="form-control" placeholder="Enter your Last Name...">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col">
+        <br>
+        <label class="form-label">Career Level</label>
+        <input [(ngModel)]="careerLevel" type="text" class="form-control" placeholder="Enter your Career Level...">
+      </div>
+    </div>
+    <label class="form-label">Skills</label>
+    <tag-input class="ngx-chips-primary" [(ngModel)]="skills" [editable]="!disabled" [disable]="disabled" secondaryPlaceholder="Enter a skill..."
+      placeholder="+Skill">
+      <tag-input-dropdown [showDropdownIfEmpty]="true" [autocompleteItems]="autocompleteItems">
+      </tag-input-dropdown>
+    </tag-input>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" (click)="c('Close click')">Close</button>
+    <button type="button" class="btn btn-primary" (click)="save(); c('Close click')">Save</button>
+  </div>
+</ng-template>
+
+<style>
+  .ng2-dropdown-menu {
+    z-index: 9999 !important;
+  }
+
+</style>

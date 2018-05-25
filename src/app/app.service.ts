@@ -7,18 +7,23 @@ export class AppService {
 
   // Set page title
   set pageTitle(value) {
-    this.titleService.setTitle(`${value} - Angular Starter`);
+    this.titleService.setTitle(`${value} - WMP Skill Tracker`);
   }
 
   // Check for RTL layout
   get isRTL() {
-    return document.documentElement.getAttribute('dir') === 'rtl' ||
-           document.body.getAttribute('dir') === 'rtl';
+    return (
+      document.documentElement.getAttribute('dir') === 'rtl' ||
+      document.body.getAttribute('dir') === 'rtl'
+    );
   }
 
   // Check if IE10
   get isIE10() {
-    return typeof document['documentMode'] === 'number' && document['documentMode'] === 10;
+    return (
+      typeof document['documentMode'] === 'number' &&
+      document['documentMode'] === 10
+    );
   }
 
   // Layout navbar color
