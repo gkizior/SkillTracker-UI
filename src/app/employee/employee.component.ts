@@ -27,12 +27,22 @@ export class EmployeeComponent implements OnInit {
   enteredId: boolean;
   Id: any;
 
-  employee: any[];
+  employee: any;
+
+  showAddress = false;
 
   firstName: string;
   lastName: string;
   careerLevel: string;
+  dateOfBirth: Date;
+  dateOfJoin: Date;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
   skills = [];
+
+  returnResult: any;
 
   autocompleteItems = ['Java', 'AWS', 'Spring', 'Angular', 'DOT NET', 'C#'];
   disabled = false;
@@ -57,6 +67,15 @@ export class EmployeeComponent implements OnInit {
     ];
   }
 
+  showAddressChange() {
+    this.employee.address != null &&
+    this.employee.state != null &&
+    this.employee.city != null &&
+    this.employee.zipCode != null
+      ? (this.showAddress = true)
+      : (this.showAddress = false);
+  }
+
   convertSkillsArray() {
     let newSkills;
     newSkills = [];
@@ -72,6 +91,7 @@ export class EmployeeComponent implements OnInit {
       this.Id = params['id'];
       if (this.enteredId) {
         this.getEmployee();
+        this.showAddressChange();
       }
     });
   }
@@ -82,6 +102,7 @@ export class EmployeeComponent implements OnInit {
       .pipe(map((res: Response) => res.json()))
       .subscribe(employee => {
         this.employee = employee;
+        this.showAddressChange();
       });
   }
 
@@ -95,6 +116,7 @@ export class EmployeeComponent implements OnInit {
       .subscribe(employee => {
         if (employee !== null) {
           this.employee = employee;
+          this.showAddressChange();
         }
       });
   }
@@ -107,13 +129,22 @@ export class EmployeeComponent implements OnInit {
     ) {
       window.alert('Not saved. Missing required information');
     } else {
+      const json = this.makeEmployeeJSON();
+      const skillJson = this.makeSkillJSON();
       this.httpclient
-        .post(
-          this.apiUrl + '/postEmployee',
-          this.makeEmployeeJSON(),
-          this.options
-        )
-        .subscribe();
+        .post(this.apiUrl + '/api/employees/', json, this.options)
+        .subscribe(result => {
+          this.returnResult = result.id;
+          this.httpclient
+            .post(
+              this.apiUrl + '/api/skills/' + this.returnResult,
+              skillJson,
+              this.options
+            )
+            .subscribe(resultSkills => {
+              console.log(resultSkills);
+            });
+        });
       this.clear();
     }
   }
@@ -129,11 +160,29 @@ export class EmployeeComponent implements OnInit {
       this.firstName +
       '", "lastName": "' +
       this.lastName +
+      '", "address": "' +
+      this.address +
+      '", "city": "' +
+      this.city +
+      '", "state": "' +
+      this.state +
+      '", "zipcode": "' +
+      this.zipCode +
+      '", "dateOfBirth": "' +
+      this.dateOfBirth +
+      '", "dateOfJoin": "' +
+      this.dateOfJoin +
       '", "careerLevel": "' +
       this.careerLevel +
       '", "skills": ' +
       JSON.stringify(this.convertSkillsArray()) +
       '}';
+    return JSON.parse(dummy);
+  }
+
+  makeSkillJSON() {
+    const dummy =
+      '{' + '"skills": ' + JSON.stringify(this.convertSkillsArray()) + '}';
     return JSON.parse(dummy);
   }
 

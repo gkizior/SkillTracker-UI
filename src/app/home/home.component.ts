@@ -41,22 +41,4 @@ export class HomeComponent {
         this.data = data;
       });
   }
-
-  delete() {
-    return this.http
-      .get(this.apiUrl + '/delete')
-      .pipe(map((res: Response) => res.text()))
-      .subscribe(data => {
-        this.getAll();
-      });
-  }
-
-  save() {
-    return this.http
-      .get(this.apiUrl + '/save')
-      .pipe(map((res: Response) => res.text()))
-      .subscribe(data => {
-        this.getAll();
-      });
-  }
 }

@@ -4,7 +4,8 @@
 
   <p>Employee Id: {{employee.empId}}</p>
   <p>Career Level: {{employee.careerLevel}}</p>
-  <p>Skills:</p>
+  <p *ngIf="showAddress">Address: {{employee.address}} {{employee.city}}, {{employee.state}} {{employee.zipCode}}</p>
+  <p *ngIf="employee.skills != null">Skills:</p>
   <tr *ngFor="let skill of employee.skills">{{skill}}</tr>
 
 </div>
@@ -55,6 +56,36 @@
         <br>
         <label class="form-label">Career Level</label>
         <input [(ngModel)]="careerLevel" type="text" class="form-control" placeholder="Enter your Career Level...">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col mb-0">
+        <label class="form-label">Date of Birth</label>
+        <input [(ngModel)]="dateOfBirth" type="date" class="form-control">
+      </div>
+      <div class="form-group col mb-0">
+        <label class="form-label">Date of Join</label>
+        <input [(ngModel)]="dateOfJoin" type="date" class="form-control">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col">
+        <label class="form-label">Address</label>
+        <input [(ngModel)]="address" type="text" class="form-control">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col mb-0">
+        <label class="form-label">City</label>
+        <input [(ngModel)]="city" type="text" class="form-control">
+      </div>
+      <div class="form-group col mb-0">
+        <label class="form-label">State</label>
+        <input [(ngModel)]="state" type="text" class="form-control">
+      </div>
+      <div class="form-group col mb-0">
+        <label class="form-label">Zip Code</label>
+        <input [(ngModel)]="zipCode" type="text" class="form-control">
       </div>
     </div>
     <label class="form-label">Skills</label>
