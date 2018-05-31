@@ -119,6 +119,7 @@ export class EmployeeComponent implements OnInit {
   }
 
   refreshUI(employee) {
+    this.skills = this.employee.skills;
     this.employee = employee;
     this.firstName = employee.firstName;
     this.lastName = employee.lastName;
@@ -138,11 +139,13 @@ export class EmployeeComponent implements OnInit {
     this.address = employee.address;
     this.state = employee.state;
     this.city = employee.city;
-    this.zipCode = employee.zipcode;
-    if (employee.zipCode === undefined) {
-      employee.zipCode = employee.zipcode;
+    this.zipCode = employee.zipCode;
+    if (employee.zipcode !== undefined) {
+      this.zipCode = employee.zipcode;
     }
-    this.skills = employee.skills;
+    if (employee.skills != null) {
+      this.skills = employee.skills;
+    }
     this.showAddressChange();
   }
 
@@ -214,7 +217,6 @@ export class EmployeeComponent implements OnInit {
         .subscribe(result => {
           this.refreshUI(result);
         });
-      this.clear();
     }
   }
 
@@ -222,23 +224,26 @@ export class EmployeeComponent implements OnInit {
     this.httpclient
       .delete(this.apiUrl + '/api/skills/' + id + ',' + skill, this.options)
       .subscribe(result => {
-        this.skills.splice(this.skills.indexOf(skill));
+        this.skills.splice(this.skills.indexOf(skill), 1);
       });
   }
 
-  postNewSkills() {
-    if (this.skills == null) {
+  addSkill() {
+    const skills = [];
+    skills[0] = (<HTMLInputElement>document.getElementById(
+      'addSkillInput'
+    )).value;
+    if (skills == null) {
       window.alert('Not updated. Missing required information');
     } else {
-      const skills = this.makeSkillJSON();
+      const dummy = new Object();
+      dummy['skills'] = skills;
       this.httpclient
-        .post(
-          this.apiUrl + '/api/skills/' + this.employee.empId,
-          skills,
-          this.options
-        )
-        .subscribe();
-      this.clear();
+        .post(this.apiUrl + '/api/skills/' + this.Id, dummy, this.options)
+        .subscribe(result => {
+          this.employee.skills.push(skills[0]);
+          this.skills = this.employee.skills;
+        });
     }
   }
 

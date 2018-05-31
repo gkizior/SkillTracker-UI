@@ -1,12 +1,12 @@
 <h4 class="font-weight-bold py-3 mb-4">Employee</h4>
 <div *ngIf="enteredId">
-  <h5 *ngIf="enteredId">{{employee.firstName}} {{employee.lastName}}</h5>
+  <h5 *ngIf="enteredId">{{firstName}} {{lastName}}</h5>
 
   <p>Employee Id: {{Id}}</p>
-  <p>Career Level: {{employee.careerLevel}}</p>
-  <p *ngIf="showAddress">Address: {{employee.address}} {{employee.city}}, {{employee.state}} {{employee.zipCode}}</p>
-  <p *ngIf="employee.skills != null">Skills:</p>
-  <tr *ngFor="let skill of employee.skills">{{skill}}</tr>
+  <p>Career Level: {{careerLevel}}</p>
+  <p *ngIf="showAddress">Address: {{address}} {{city}}, {{state}} {{zipCode}}</p>
+  <p *ngIf="skills != null">Skills:</p>
+  <tr *ngFor="let skill of skills">{{skill}}</tr>
   <button type="button" class="btn btn-info" (click)="open(defaultModal)">Update Employee</button>
   <button type="button" class="btn btn-info" (click)="open(defaultModal2)">Update Skills</button>
 
@@ -122,10 +122,11 @@
         <i class="ion ion-md-trash"></i>
       </button>{{skill}}
     </tr>
+    <input (keyup.enter)="addSkill()" id="addSkillInput" placeholder="Add skill...">
+    <button class="btn btn-primary" (click)="addSkill()">Add Skill</button>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-default" (click)="c('Close click')">Close</button>
-    <button *ngIf="enteredId" type="button" class="btn btn-primary" (click)="updateEmployee(); c('Close click')">Update</button>
   </div>
 </ng-template>
 
