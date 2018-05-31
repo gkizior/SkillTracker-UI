@@ -92,6 +92,16 @@ export class EmployeeComponent implements OnInit {
       if (this.enteredId) {
         this.getEmployee();
         this.showAddressChange();
+      } else {
+        this.employee = [
+          {
+            empId: '',
+            firstName: '',
+            lastName: '',
+            careerLevel: '',
+            skills: []
+          }
+        ];
       }
     });
   }
@@ -134,7 +144,7 @@ export class EmployeeComponent implements OnInit {
       this.httpclient
         .post(this.apiUrl + '/api/employees/', json, this.options)
         .subscribe(result => {
-          this.returnResult = result.id;
+          this.returnResult = result['id'];
           this.httpclient
             .post(
               this.apiUrl + '/api/skills/' + this.returnResult,

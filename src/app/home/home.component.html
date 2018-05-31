@@ -17,7 +17,7 @@
     <tbody>
       <tr *ngFor="let d of data">
         <td>
-          <a href="/employee/{{d.empId}}">{{d.empId}}</a>
+          <a [routerLink]="['/employee', { id: d.empId }]">{{d.empId}}</a>
         </td>
         <td>{{d.firstName}}</td>
         <td>{{d.lastName}}</td>
