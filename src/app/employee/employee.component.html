@@ -2,11 +2,14 @@
 <div *ngIf="enteredId">
   <h5 *ngIf="enteredId">{{employee.firstName}} {{employee.lastName}}</h5>
 
-  <p>Employee Id: {{employee.empId}}</p>
+  <p>Employee Id: {{Id}}</p>
   <p>Career Level: {{employee.careerLevel}}</p>
   <p *ngIf="showAddress">Address: {{employee.address}} {{employee.city}}, {{employee.state}} {{employee.zipCode}}</p>
   <p *ngIf="employee.skills != null">Skills:</p>
   <tr *ngFor="let skill of employee.skills">{{skill}}</tr>
+  <button type="button" class="btn btn-info" (click)="open(defaultModal)">Update Employee</button>
+  <button type="button" class="btn btn-info" (click)="open(defaultModal2)">Update Skills</button>
+
 
 </div>
 
@@ -17,14 +20,9 @@
   <br>
   <button type="button" class="btn btn-info" (click)="open(defaultModal)">Add Employee</button>
 
-  <br>
-  <br>
-  <button class="btn btn-secondary" (click)="update()">Update Employee</button>
-
-
   <div>
     <tr *ngFor="let emp of employee">
-      <a href='/employee/{{emp.empId}}'>{{emp.firstName}} {{emp.lastName}}</a>
+      <a [routerLink]="['/employee', { id: emp.empId }]">{{emp.firstName}} {{emp.lastName}}</a>
     </tr>
   </div>
 
@@ -33,8 +31,12 @@
 <ng-template #defaultModal let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h5 class="modal-title">
-      New
-      <span class="font-weight-light">Employee</span>
+      <div *ngIf="!enteredId">New
+        <span class="font-weight-light">Employee</span>
+      </div>
+      <div *ngIf="enteredId">Update
+        <span class="font-weight-light">Employee</span>
+      </div>
       <br>
       <small class="text-muted">Enter all of the below information</small>
     </h5>
@@ -88,22 +90,52 @@
         <input [(ngModel)]="zipCode" type="text" class="form-control">
       </div>
     </div>
-    <label class="form-label">Skills</label>
-    <tag-input class="ngx-chips-primary" [(ngModel)]="skills" [editable]="!disabled" [disable]="disabled" secondaryPlaceholder="Enter a skill..."
-      placeholder="+Skill">
-      <tag-input-dropdown [showDropdownIfEmpty]="true" [autocompleteItems]="autocompleteItems">
-      </tag-input-dropdown>
-    </tag-input>
+    <div *ngIf="!enteredId">
+      <label class="form-label">Skills</label>
+      <tag-input class="ngx-chips-primary" [(ngModel)]="skills" [editable]="!disabled" [disable]="disabled" secondaryPlaceholder="Enter a skill..."
+        placeholder="+Skill">
+        <tag-input-dropdown [showDropdownIfEmpty]="true" [autocompleteItems]="autocompleteItems">
+        </tag-input-dropdown>
+      </tag-input>
+    </div>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-default" (click)="c('Close click')">Close</button>
-    <button type="button" class="btn btn-primary" (click)="save(); c('Close click')">Save</button>
+    <button *ngIf="!enteredId" type="button" class="btn btn-primary" (click)="save(); c('Close click')">Save</button>
+    <button *ngIf="enteredId" type="button" class="btn btn-primary" (click)="updateEmployee(); c('Close click')">Update</button>
+  </div>
+</ng-template>
+
+<ng-template #defaultModal2 let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h5 class="modal-title">
+      Update
+      <span class="font-weight-light">Employee Skills</span>
+      <br>
+      <small class="text-muted">Enter all of the below information</small>
+    </h5>
+    <button type="button" class="close" (click)="d('Cross click')">&times;</button>
+  </div>
+  <div class="modal-body">
+    <tr *ngFor="let skill of skills">
+      <button (click)="deleteSkill(Id, skill)">
+        <i class="ion ion-md-trash"></i>
+      </button>{{skill}}
+    </tr>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" (click)="c('Close click')">Close</button>
+    <button *ngIf="enteredId" type="button" class="btn btn-primary" (click)="updateEmployee(); c('Close click')">Update</button>
   </div>
 </ng-template>
 
 <style>
   .ng2-dropdown-menu {
     z-index: 9999 !important;
+  }
+
+  .ion-md-trash {
+    color: red;
   }
 
 </style>
