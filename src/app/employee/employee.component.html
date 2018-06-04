@@ -1,10 +1,10 @@
 <h4 class="font-weight-bold py-3 mb-4">Employee</h4>
 <div *ngIf="enteredId">
-  <h5 *ngIf="enteredId">{{firstName}} {{lastName}}</h5>
+  <h5 *ngIf="enteredId">{{employee.firstName}} {{employee.lastName}}</h5>
 
   <p>Employee Id: {{Id}}</p>
-  <p>Career Level: {{careerLevel}}</p>
-  <p *ngIf="showAddress">Address: {{address}} {{city}}, {{state}} {{zipcode}}</p>
+  <p>Career Level: {{employee.careerLevel}}</p>
+  <p *ngIf="showAddress">Address: {{employee.address}} {{employee.city}}, {{employee.state}} {{employee.zipcode}}</p>
   <p *ngIf="skills != null">Skills:</p>
   <tr *ngFor="let skill of employee.skills">{{skill}}</tr>
   <button type="button" class="btn btn-info" (click)="open(defaultModal)">Update Employee</button>

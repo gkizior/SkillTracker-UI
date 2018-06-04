@@ -68,10 +68,20 @@ export class EmployeeComponent implements OnInit {
       if (this.enteredId) {
         this.employees = [];
         this.getEmployee();
+        this.getAutoCompleteItems();
       } else {
         this.clear();
       }
     });
+  }
+
+  getAutoCompleteItems() {
+    this.http
+      .get(this.apiUrl + '/getAllSkills')
+      .pipe(map((res: Response) => res.json()))
+      .subscribe(items => {
+        this.autocompleteItems = items;
+      });
   }
 
   getEmployee() {
