@@ -16,6 +16,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppService } from './app.service';
 import { LayoutModule } from './layout/layout.module';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { TagInputModule } from 'ngx-chips';
 
 // *******************************************************************************
@@ -28,6 +29,7 @@ import { EmployeeComponent } from './employee/employee.component';
 //
 
 import { HttpModule } from '@angular/http';
+import { StatsComponent } from './stats/stats.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,8 @@ import { HttpModule } from '@angular/http';
 
     // Pages
     HomeComponent,
-    EmployeeComponent
+    EmployeeComponent,
+    StatsComponent
   ],
 
   imports: [
@@ -47,6 +50,7 @@ import { HttpModule } from '@angular/http';
     // App
     AppRoutingModule,
     LayoutModule,
+    NgxChartsModule,
     TagInputModule,
     FormsModule,
     BrowserAnimationsModule

@@ -1,3 +1,4 @@
+import { StatsComponent } from './stats/stats.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
@@ -30,6 +31,12 @@ const routes: Routes = [
       { path: '', component: EmployeeComponent },
       { path: ':id', component: EmployeeComponent }
     ]
+  },
+
+  {
+    path: 'stats',
+    component: Layout1Component,
+    children: [{ path: '', component: StatsComponent }]
   }
 ];
 
