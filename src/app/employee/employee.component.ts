@@ -221,8 +221,10 @@ export class EmployeeComponent implements OnInit {
   }
 
   deleteSkill(id, skill) {
+    const dummy = new Object();
+    dummy['skills'] = ['' + skill];
     this.httpclient
-      .delete(this.apiUrl + '/api/skills/' + id + ',' + skill, this.options)
+      .put(this.apiUrl + '/api/skills/delete/' + id, dummy, this.options)
       .subscribe(result => {
         this.skills.splice(this.skills.indexOf(skill), 1);
       });
@@ -234,16 +236,26 @@ export class EmployeeComponent implements OnInit {
       'addSkillInput'
     )).value;
     if (skills == null) {
-      window.alert('Not updated. Missing required information');
+      alert('Not updated. Missing required information');
     } else {
       const dummy = new Object();
       dummy['skills'] = skills;
-      this.httpclient
-        .post(this.apiUrl + '/api/skills/' + this.Id, dummy, this.options)
-        .subscribe(result => {
-          this.employee.skills.push(skills[0]);
-          this.skills = this.employee.skills;
-        });
+      try {
+        this.httpclient
+          .post(this.apiUrl + '/api/skills/' + this.Id, dummy, this.options)
+          .subscribe(
+            result => {
+              this.employee.skills.push(skills[0]);
+              this.skills = this.employee.skills;
+            },
+            error => {
+              console.log('Error adding skill. Skill already exists');
+              alert('Error adding skill. Skill already exists');
+            }
+          );
+      } catch (e) {
+        console.log(e);
+      }
     }
   }
 
