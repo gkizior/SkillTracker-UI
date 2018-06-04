@@ -77,11 +77,11 @@ export class EmployeeComponent implements OnInit {
       .get(this.apiUrl + '/getEmployee/' + this.Id)
       .pipe(map((res: Response) => res.json()))
       .subscribe(employee => {
-        this.refreshUI(employee);
+        this.refreshUI(employee, false);
       });
   }
 
-  refreshUI(employee) {
+  refreshUI(employee, update) {
     this.employee = employee;
     this.firstName = employee.firstName;
     this.lastName = employee.lastName;
@@ -102,7 +102,9 @@ export class EmployeeComponent implements OnInit {
     this.state = employee.state;
     this.city = employee.city;
     this.zipcode = employee.zipcode;
-    this.skills = employee.skills;
+    if (!update) {
+      this.skills = employee.skills;
+    }
     this.showAddressChange();
   }
 
@@ -185,7 +187,7 @@ export class EmployeeComponent implements OnInit {
           this.options
         )
         .subscribe(result => {
-          this.refreshUI(result);
+          this.refreshUI(result, true);
         });
     }
   }
@@ -198,6 +200,20 @@ export class EmployeeComponent implements OnInit {
       .subscribe(result => {
         this.skills.splice(this.skills.indexOf(skill), 1);
       });
+  }
+
+  deleteEmployee() {
+    if (confirm('Are you sure you want to delete ' + this.firstName + '?')) {
+      this.httpclient
+        .delete(this.apiUrl + '/api/skills/' + this.Id, this.options)
+        .subscribe(result => {
+          this.httpclient
+            .delete(this.apiUrl + '/api/employees/' + this.Id, this.options)
+            .subscribe(finalResult => {
+              this.router.navigate(['/employee']);
+            });
+        });
+    }
   }
 
   addSkill() {
@@ -213,6 +229,9 @@ export class EmployeeComponent implements OnInit {
           .post(this.apiUrl + '/api/skills/' + this.Id, skillJson, this.options)
           .subscribe(
             result => {
+              if (this.employee.skills === null) {
+                this.employee.skills = [];
+              }
               this.employee.skills.push(skill);
               this.skills = this.employee.skills;
             },
