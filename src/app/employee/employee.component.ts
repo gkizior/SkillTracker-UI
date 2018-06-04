@@ -5,6 +5,7 @@ import { Http, Response, RequestOptions } from '@angular/http';
 import { map } from 'rxjs/operators';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Employee } from './employee';
 
 @Component({
   selector: 'app-employee',
@@ -27,7 +28,7 @@ export class EmployeeComponent implements OnInit {
   enteredId: boolean;
   Id: any;
 
-  employee: any;
+  employee: Employee;
 
   showAddress = false;
 
@@ -39,10 +40,10 @@ export class EmployeeComponent implements OnInit {
   address: string;
   city: string;
   state: string;
-  zipCode: string;
+  zipcode: string;
   skills = [];
 
-  returnResult: any;
+  resultId: any;
 
   autocompleteItems = ['Java', 'AWS', 'Spring', 'Angular', 'DOT NET', 'C#'];
   disabled = false;
@@ -56,35 +57,7 @@ export class EmployeeComponent implements OnInit {
     private httpclient: HttpClient
   ) {
     this.appService.pageTitle = 'Employee';
-    this.employee = [
-      {
-        empId: '',
-        firstName: '',
-        lastName: '',
-        careerLevel: '',
-        skills: []
-      }
-    ];
-  }
-
-  showAddressChange() {
-    this.employee.address != null &&
-    this.employee.state != null &&
-    this.employee.city != null &&
-    (this.employee.zipCode != null || this.employee.zipcode != null)
-      ? (this.showAddress = true)
-      : (this.showAddress = false);
-  }
-
-  convertSkillsArray() {
-    let newSkills;
-    newSkills = [];
-    if (this.skills != null) {
-      for (let i = 0; i < this.skills.length; i++) {
-        newSkills[i] = this.skills[i].value;
-      }
-    }
-    return newSkills;
+    this.clear();
   }
 
   ngOnInit() {
@@ -93,33 +66,22 @@ export class EmployeeComponent implements OnInit {
       this.Id = params['id'];
       if (this.enteredId) {
         this.getEmployee();
-        this.showAddressChange();
       } else {
-        this.employee = [
-          {
-            empId: '',
-            firstName: '',
-            lastName: '',
-            careerLevel: '',
-            skills: []
-          }
-        ];
-        this.firstName = null;
-        this.lastName = null;
-        this.careerLevel = null;
-        this.dateOfBirth = null;
-        this.dateOfJoin = null;
-        this.address = null;
-        this.state = null;
-        this.city = null;
-        this.zipCode = null;
-        this.skills = null;
+        this.clear();
       }
     });
   }
 
+  getEmployee() {
+    return this.http
+      .get(this.apiUrl + '/getEmployee/' + this.Id)
+      .pipe(map((res: Response) => res.json()))
+      .subscribe(employee => {
+        this.refreshUI(employee);
+      });
+  }
+
   refreshUI(employee) {
-    this.skills = this.employee.skills;
     this.employee = employee;
     this.firstName = employee.firstName;
     this.lastName = employee.lastName;
@@ -139,23 +101,29 @@ export class EmployeeComponent implements OnInit {
     this.address = employee.address;
     this.state = employee.state;
     this.city = employee.city;
-    this.zipCode = employee.zipCode;
-    if (employee.zipcode !== undefined) {
-      this.zipCode = employee.zipcode;
-    }
-    if (employee.skills != null) {
-      this.skills = employee.skills;
-    }
+    this.zipcode = employee.zipcode;
+    this.skills = employee.skills;
     this.showAddressChange();
   }
 
-  getEmployee() {
-    return this.http
-      .get(this.apiUrl + '/getEmployee/' + this.Id)
-      .pipe(map((res: Response) => res.json()))
-      .subscribe(employee => {
-        this.refreshUI(employee);
-      });
+  showAddressChange() {
+    this.employee.address != null &&
+    this.employee.state != null &&
+    this.employee.city != null &&
+    (this.employee.zipcode != null || this.employee.zipcode != null)
+      ? (this.showAddress = true)
+      : (this.showAddress = false);
+  }
+
+  convertSkillsArray() {
+    let newSkills;
+    newSkills = [];
+    if (this.skills != null) {
+      for (let i = 0; i < this.skills.length; i++) {
+        newSkills[i] = this.skills[i].value;
+      }
+    }
+    return newSkills;
   }
 
   search() {
@@ -170,7 +138,6 @@ export class EmployeeComponent implements OnInit {
       .subscribe(employee => {
         if (employee !== null) {
           this.employee = employee;
-          this.showAddressChange();
         }
       });
   }
@@ -183,23 +150,22 @@ export class EmployeeComponent implements OnInit {
     ) {
       window.alert('Not saved. Missing required information');
     } else {
-      const json = this.makeEmployeeJSON();
-      const skillJson = this.makeSkillJSON();
+      const employeeJson = this.makeEmployeeJSON();
+      const skillsJson = this.makeSkillJSON();
       this.httpclient
-        .post(this.apiUrl + '/api/employees/', json, this.options)
+        .post(this.apiUrl + '/api/employees/', employeeJson, this.options)
         .subscribe(result => {
-          this.returnResult = result['id'];
+          this.resultId = result['id'];
           this.httpclient
             .post(
-              this.apiUrl + '/api/skills/' + this.returnResult,
-              skillJson,
+              this.apiUrl + '/api/skills/' + this.resultId,
+              skillsJson,
               this.options
             )
-            .subscribe(resultSkills => {
-              console.log(resultSkills);
+            .subscribe(finalResult => {
+              this.router.navigate(['/employee', { id: this.resultId }]);
             });
         });
-      this.clear();
     }
   }
 
@@ -211,9 +177,13 @@ export class EmployeeComponent implements OnInit {
     ) {
       window.alert('Not updated. Missing required information');
     } else {
-      const json = this.makeEmployeeJSON();
+      const employeeJson = this.makeEmployeeJSON();
       this.httpclient
-        .put(this.apiUrl + '/api/employees/' + this.Id, json, this.options)
+        .put(
+          this.apiUrl + '/api/employees/' + this.Id,
+          employeeJson,
+          this.options
+        )
         .subscribe(result => {
           this.refreshUI(result);
         });
@@ -221,35 +191,32 @@ export class EmployeeComponent implements OnInit {
   }
 
   deleteSkill(id, skill) {
-    const dummy = new Object();
-    dummy['skills'] = ['' + skill];
+    const skillJson = new Object();
+    skillJson['skills'] = ['' + skill];
     this.httpclient
-      .put(this.apiUrl + '/api/skills/delete/' + id, dummy, this.options)
+      .put(this.apiUrl + '/api/skills/remove/' + id, skillJson, this.options)
       .subscribe(result => {
         this.skills.splice(this.skills.indexOf(skill), 1);
       });
   }
 
   addSkill() {
-    const skills = [];
-    skills[0] = (<HTMLInputElement>document.getElementById(
-      'addSkillInput'
-    )).value;
-    if (skills == null) {
+    const skill = (<HTMLInputElement>document.getElementById('addSkillInput'))
+      .value;
+    if (skill === null || skill === undefined) {
       alert('Not updated. Missing required information');
     } else {
-      const dummy = new Object();
-      dummy['skills'] = skills;
+      const skillJson = new Object();
+      skillJson['skills'] = ['' + skill];
       try {
         this.httpclient
-          .post(this.apiUrl + '/api/skills/' + this.Id, dummy, this.options)
+          .post(this.apiUrl + '/api/skills/' + this.Id, skillJson, this.options)
           .subscribe(
             result => {
-              this.employee.skills.push(skills[0]);
+              this.employee.skills.push(skill);
               this.skills = this.employee.skills;
             },
             error => {
-              console.log('Error adding skill. Skill already exists');
               alert('Error adding skill. Skill already exists');
             }
           );
@@ -260,31 +227,38 @@ export class EmployeeComponent implements OnInit {
   }
 
   makeEmployeeJSON() {
-    const dummy2 = new Object();
-    dummy2['firstName'] = this.firstName;
-    dummy2['lastName'] = this.lastName;
-    dummy2['address'] = this.address;
-    dummy2['city'] = this.city;
-    dummy2['state'] = this.state;
-    dummy2['zipcode'] = this.zipCode;
-    dummy2['dateOfBirth'] = this.dateOfBirth;
-    dummy2['dateOfJoin'] = this.dateOfJoin;
-    dummy2['careerLevel'] = this.careerLevel;
-    dummy2['skills'] = this.convertSkillsArray();
-    return dummy2;
+    const employeeJson = new Object();
+    employeeJson['firstName'] = this.firstName;
+    employeeJson['lastName'] = this.lastName;
+    employeeJson['address'] = this.address;
+    employeeJson['city'] = this.city;
+    employeeJson['state'] = this.state;
+    employeeJson['zipcode'] = this.zipcode;
+    employeeJson['dateOfBirth'] = this.dateOfBirth;
+    employeeJson['dateOfJoin'] = this.dateOfJoin;
+    employeeJson['careerLevel'] = this.careerLevel;
+    employeeJson['skills'] = this.convertSkillsArray();
+    return employeeJson;
   }
 
   makeSkillJSON() {
-    const dummy = new Object();
-    dummy['skills'] = this.convertSkillsArray();
-    return dummy;
+    const skillsJson = new Object();
+    skillsJson['skills'] = this.convertSkillsArray();
+    return skillsJson;
   }
 
   clear() {
-    this.firstName = '';
-    this.lastName = '';
-    this.careerLevel = '';
-    this.skills = [];
+    this.employee = null;
+    this.firstName = null;
+    this.lastName = null;
+    this.careerLevel = null;
+    this.dateOfBirth = null;
+    this.dateOfJoin = null;
+    this.address = null;
+    this.state = null;
+    this.city = null;
+    this.zipcode = null;
+    this.skills = null;
   }
 
   open(content, options = {}) {
@@ -306,15 +280,5 @@ export class EmployeeComponent implements OnInit {
     } else {
       return `with: ${reason}`;
     }
-  }
-
-  checkboxValidation(result) {
-    return new Promise(function(resolve, reject) {
-      if (result) {
-        resolve();
-      } else {
-        reject('You need to agree with T&C');
-      }
-    });
   }
 }

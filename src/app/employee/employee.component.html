@@ -4,7 +4,7 @@
 
   <p>Employee Id: {{Id}}</p>
   <p>Career Level: {{careerLevel}}</p>
-  <p *ngIf="showAddress">Address: {{address}} {{city}}, {{state}} {{zipCode}}</p>
+  <p *ngIf="showAddress">Address: {{address}} {{city}}, {{state}} {{zipcode}}</p>
   <p *ngIf="skills != null">Skills:</p>
   <tr *ngFor="let skill of skills">{{skill}}</tr>
   <button type="button" class="btn btn-info" (click)="open(defaultModal)">Update Employee</button>
@@ -87,7 +87,7 @@
       </div>
       <div class="form-group col mb-0">
         <label class="form-label">Zip Code</label>
-        <input [(ngModel)]="zipCode" type="text" class="form-control">
+        <input [(ngModel)]="zipcode" type="text" class="form-control">
       </div>
     </div>
     <div *ngIf="!enteredId">
