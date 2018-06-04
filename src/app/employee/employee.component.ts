@@ -29,6 +29,7 @@ export class EmployeeComponent implements OnInit {
   Id: any;
 
   employee: Employee;
+  employees: Employee[];
 
   showAddress = false;
 
@@ -65,6 +66,7 @@ export class EmployeeComponent implements OnInit {
       this.enteredId = params['id'] !== undefined ? true : false;
       this.Id = params['id'];
       if (this.enteredId) {
+        this.employees = [];
         this.getEmployee();
       } else {
         this.clear();
@@ -122,7 +124,11 @@ export class EmployeeComponent implements OnInit {
     newSkills = [];
     if (this.skills != null) {
       for (let i = 0; i < this.skills.length; i++) {
-        newSkills[i] = this.skills[i].value;
+        if (typeof this.skills[i] === 'string') {
+          newSkills[i] = this.skills[i];
+        } else {
+          newSkills[i] = this.skills[i].value;
+        }
       }
     }
     return newSkills;
@@ -139,7 +145,7 @@ export class EmployeeComponent implements OnInit {
       .pipe(map((res: Response) => res.json()))
       .subscribe(employee => {
         if (employee !== null) {
-          this.employee = employee;
+          this.employees = employee;
         }
       });
   }
@@ -187,19 +193,24 @@ export class EmployeeComponent implements OnInit {
           this.options
         )
         .subscribe(result => {
+          result['skills'] = this.convertSkillsArray();
           this.refreshUI(result, true);
         });
+      const skillsJson = this.makeSkillJSON();
+      this.httpclient
+        .delete(this.apiUrl + '/api/skills/' + this.Id, this.options)
+        .subscribe(result => {
+          this.httpclient
+            .post(
+              this.apiUrl + '/api/skills/' + this.Id,
+              skillsJson,
+              this.options
+            )
+            .subscribe(finalResult => {
+              this.employee.skills = this.convertSkillsArray();
+            });
+        });
     }
-  }
-
-  deleteSkill(id, skill) {
-    const skillJson = new Object();
-    skillJson['skills'] = ['' + skill];
-    this.httpclient
-      .put(this.apiUrl + '/api/skills/remove/' + id, skillJson, this.options)
-      .subscribe(result => {
-        this.skills.splice(this.skills.indexOf(skill), 1);
-      });
   }
 
   deleteEmployee() {
@@ -216,6 +227,7 @@ export class EmployeeComponent implements OnInit {
     }
   }
 
+  // Not in use
   addSkill() {
     const skill = (<HTMLInputElement>document.getElementById('addSkillInput'))
       .value;
@@ -245,6 +257,17 @@ export class EmployeeComponent implements OnInit {
     }
   }
 
+  // Not in use
+  deleteSkill(id, skill) {
+    const skillJson = new Object();
+    skillJson['skills'] = ['' + skill];
+    this.httpclient
+      .put(this.apiUrl + '/api/skills/remove/' + id, skillJson, this.options)
+      .subscribe(result => {
+        this.skills.splice(this.skills.indexOf(skill), 1);
+      });
+  }
+
   makeEmployeeJSON() {
     const employeeJson = new Object();
     employeeJson['firstName'] = this.firstName;
@@ -267,7 +290,7 @@ export class EmployeeComponent implements OnInit {
   }
 
   clear() {
-    this.employee = null;
+    this.employee = new Employee();
     this.firstName = null;
     this.lastName = null;
     this.careerLevel = null;
@@ -277,7 +300,7 @@ export class EmployeeComponent implements OnInit {
     this.state = null;
     this.city = null;
     this.zipcode = null;
-    this.skills = null;
+    this.skills = [];
   }
 
   open(content, options = {}) {

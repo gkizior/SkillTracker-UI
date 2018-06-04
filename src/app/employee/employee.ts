@@ -11,5 +11,5 @@ export class Employee {
   zipcode: string;
   createdAt: string;
   updatedAt: string;
-  skills: string[];
+  skills: string[] = [];
 }

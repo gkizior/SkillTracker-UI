@@ -6,9 +6,8 @@
   <p>Career Level: {{careerLevel}}</p>
   <p *ngIf="showAddress">Address: {{address}} {{city}}, {{state}} {{zipcode}}</p>
   <p *ngIf="skills != null">Skills:</p>
-  <tr *ngFor="let skill of skills">{{skill}}</tr>
+  <tr *ngFor="let skill of employee.skills">{{skill}}</tr>
   <button type="button" class="btn btn-info" (click)="open(defaultModal)">Update Employee</button>
-  <button type="button" class="btn btn-info" (click)="open(defaultModal2)">Update Skills</button>
   <button type="button" class="btn btn-danger" (click)="deleteEmployee()">Delete Employee</button>
 
 </div>
@@ -21,7 +20,7 @@
   <button type="button" class="btn btn-info" (click)="open(defaultModal)">Add Employee</button>
 
   <div>
-    <tr *ngFor="let emp of employee">
+    <tr *ngFor="let emp of employees">
       <a [routerLink]="['/employee', { id: emp.empId }]">{{emp.firstName}} {{emp.lastName}}</a>
     </tr>
   </div>
@@ -90,7 +89,7 @@
         <input [(ngModel)]="zipcode" type="text" class="form-control">
       </div>
     </div>
-    <div *ngIf="!enteredId">
+    <div>
       <label class="form-label">Skills</label>
       <tag-input class="ngx-chips-primary" [(ngModel)]="skills" [editable]="!disabled" [disable]="disabled" secondaryPlaceholder="Enter a skill..."
         placeholder="+Skill">
@@ -103,30 +102,6 @@
     <button type="button" class="btn btn-default" (click)="c('Close click')">Close</button>
     <button *ngIf="!enteredId" type="button" class="btn btn-primary" (click)="save(); c('Close click')">Save</button>
     <button *ngIf="enteredId" type="button" class="btn btn-primary" (click)="updateEmployee(); c('Close click')">Update</button>
-  </div>
-</ng-template>
-
-<ng-template #defaultModal2 let-c="close" let-d="dismiss">
-  <div class="modal-header">
-    <h5 class="modal-title">
-      Update
-      <span class="font-weight-light">Employee Skills</span>
-      <br>
-      <small class="text-muted">Enter all of the below information</small>
-    </h5>
-    <button type="button" class="close" (click)="d('Cross click')">&times;</button>
-  </div>
-  <div class="modal-body">
-    <tr *ngFor="let skill of skills">
-      <button (click)="deleteSkill(Id, skill)">
-        <i class="ion ion-md-trash"></i>
-      </button>{{skill}}
-    </tr>
-    <input (keyup.enter)="addSkill()" id="addSkillInput" placeholder="Add skill...">
-    <button class="btn btn-primary" (click)="addSkill()">Add Skill</button>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-default" (click)="c('Close click')">Close</button>
   </div>
 </ng-template>
 
