@@ -7,3 +7,16 @@
     [scheme]="'vivid'" xAxisLabel="Technology" yAxisLabel="Employees">
   </ngx-charts-bar-vertical-2d>
 </div>
+
+<h5>Mock skill distribution of a team given skill prerequisites</h5>
+
+<input type="number" [(ngModel)]="number" placeholder="Enter team size..." />
+<input type="text" [(ngModel)]="skills" placeholder="Enter skills..." />
+<button class="btn btn-primary" (click)="getSearchData()">Find</button>
+<br>
+<i style="color: red" *ngIf="defaultMessage">Please enter team size AND skill(s)</i>
+
+<div style="height: 300px">
+  <ngx-charts-advanced-pie-chart [results]="searchData" [scheme]="'vivid'">
+  </ngx-charts-advanced-pie-chart>
+</div>
