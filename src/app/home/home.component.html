@@ -3,16 +3,56 @@
 
 <div class="jumbotron">
   <h1 class="display-3">Welcome to Skill Tracker!</h1>
-  <p class="lead">This is a POC for Apache Solr and Spring-Boot integration. Also utilizing AOP, Angular, and MySQL</p>
+  <p class="lead">This is a POC for Apache Solr and Spring Boot integration. Also utilizing AOP, Angular, and MySQL</p>
   <hr class="my-4">
   <p>Learn more about this application's software below</p>
-  <p class="lead">
-    <a href="http://lucene.apache.org/solr/">
-      <img src="http://lucene.apache.org/solr/assets/identity/Solr_Logo_on_white.png" style="height:86px" title="Apache Solr">
-    </a>
-    <a href="https://spring.io/projects/spring-boot">
-      <img src="https://i0.wp.com/thecuriousdev.org/wp-content/uploads/2017/12/spring-boot-logo.png" style="height:108px; margin-top: 18px"
-        title="Spring-Boot">
-    </a>
-  </p>
+  <div class="card-deck">
+    <div class="card">
+      <img class="card-img-top" src="http://lucene.apache.org/solr/assets/identity/Solr_Logo_on_white.png" alt="Apache Solr">
+      <div class="card-body">
+        <h4 class="card-title">Apache Solr</h4>
+        <p class="card-text">Solr is an open source enterprise search platform featuring full-text search, hit highlighting, faceted search, real-time
+          indexing, dynamic clustering, database integration, NoSQL features and rich document handling.</p>
+        <div class="card-footer">
+          <a href="http://lucene.apache.org/solr/" target="_blank" class="btn btn-primary">Info</a>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img class="card-img-top" src="https://i0.wp.com/thecuriousdev.org/wp-content/uploads/2017/12/spring-boot-logo.png" alt="Spring Boot">
+      <div class="card-body">
+        <h4 class="card-title">Spring Boot</h4>
+        <p class="card-text">Spring Boot is Spring's convention-over-configuration solution for creating stand-alone, production-grade Spring-based
+          Applications featuring embeded Tomcat, simple Maven configuration, metrics & health checks, and no code generation
+          and XML configuration requirements.</p>
+        <div class="card-footer">
+          <a href="https://spring.io/projects/spring-boot" target="_blank" class="btn btn-primary">Info</a>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <img class="card-img-top" src="https://www.vectorlogo.zone/logos/angular/angular-card.png" alt="Angular">
+      <div class="card-body">
+        <h4 class="card-title">Angular</h4>
+        <p class="card-text">Angular is a platform that makes it easy to build applications with the web. Angular combines declarative templates,
+          dependency injection, end to end tooling, and integrated best practices to solve development challenges.</p>
+        <div class="card-footer">
+          <a href="https://angular.io/" target="_blank" class="btn btn-primary">Info</a>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<style>
+  .card-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+  }
+
+  .card-deck .card {
+    padding-bottom: 50px;
+  }
+
+</style>
