@@ -8,22 +8,52 @@
   <p *ngIf="skills != null">Skills:</p>
   <tr *ngFor="let skill of employee.skills">{{skill}}</tr>
   <button type="button" class="btn btn-info" (click)="open(defaultModal)">Update Employee</button>
-  <button type="button" class="btn btn-danger" (click)="deleteEmployee()">Delete Employee</button>
+  <button mwlConfirmationPopover class="btn btn-danger" popoverTitle="Delete Employee" popoverMessage="Are you sure you want to delete {{employee.firstName}} {{employee.lastName}}?"
+    [placement]="isRTL ? 'left' : 'right'" (confirm)="deleteEmployee()">Delete Employee</button>
 
 </div>
 
 <div *ngIf="!enteredId">
-  <input (keyup.enter)="search()" id="searchBy" placeholder="Type Employee to search by">
-  <button class="btn btn-primary" (click)="search()">Search</button>
+  <div>
+    <div style="text-align: left; width:49%; display: inline-block">
+      <input (keyup.enter)="compSearch()" id="searchBy" placeholder="Search...">
+      <button class="btn btn-primary" (click)="compSearch()">Comprehensive Search</button>
+    </div>
+    <div style="text-align: right; width:50%; display: inline-block">
+      <input (keyup.enter)="search()" id="skillInput" placeholder="Type Skill to search by">
+      <button class="btn btn-primary" (click)="search()">Search</button>
+      <button type="button" class="btn btn-info" (click)="open(defaultModal)">Add Employee</button>
+    </div>
+  </div>
 
   <br>
-  <button type="button" class="btn btn-info" (click)="open(defaultModal)">Add Employee</button>
+  <div class="card" style="text-align:center">
+    <table class="table card-table">
+      <thead>
+        <th>Employee Id</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Career Level</th>
+      </thead>
+      <tbody>
+        <tr *ngFor="let d of data">
+          <td>
+            <a [routerLink]="['/employee', { id: d.empId }]">{{d.empId}}</a>
+          </td>
+          <td>{{d.firstName}}</td>
+          <td>{{d.lastName}}</td>
+          <td>{{d.careerLevel}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
+  <!-- 
   <div>
     <tr *ngFor="let emp of employees">
       <a [routerLink]="['/employee', { id: emp.empId }]">{{emp.firstName}} {{emp.lastName}}</a>
     </tr>
-  </div>
+  </div> -->
 
 </div>
 

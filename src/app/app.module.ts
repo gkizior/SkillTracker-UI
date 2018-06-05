@@ -18,6 +18,7 @@ import { AppService } from './app.service';
 import { LayoutModule } from './layout/layout.module';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { TagInputModule } from 'ngx-chips';
+import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
 
 // *******************************************************************************
 // Pages
@@ -53,6 +54,7 @@ import { StatsComponent } from './stats/stats.component';
     NgxChartsModule,
     TagInputModule,
     FormsModule,
+    ConfirmationPopoverModule.forRoot(),
     BrowserAnimationsModule
   ],
 

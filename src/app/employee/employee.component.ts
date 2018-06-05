@@ -49,6 +49,9 @@ export class EmployeeComponent implements OnInit {
   autocompleteItems = ['Java', 'AWS', 'Spring', 'Angular', 'DOT NET', 'C#'];
   disabled = false;
 
+  data: any;
+  saved = false;
+
   constructor(
     private appService: AppService,
     private route: ActivatedRoute,
@@ -58,6 +61,7 @@ export class EmployeeComponent implements OnInit {
     private httpclient: HttpClient
   ) {
     this.appService.pageTitle = 'Employee';
+    this.getAll();
     this.clear();
   }
 
@@ -67,7 +71,21 @@ export class EmployeeComponent implements OnInit {
       this.Id = params['id'];
       if (this.enteredId) {
         this.employees = [];
-        this.getEmployee();
+        if (!this.saved) {
+          this.getEmployee();
+        } else {
+          this.employee.address = this.address;
+          this.employee.firstName = this.firstName;
+          this.employee.lastName = this.lastName;
+          this.employee.careerLevel = this.careerLevel;
+          this.employee.city = this.city;
+          this.employee.dateOfBirth = this.dateOfBirth;
+          this.employee.dateOfJoin = this.dateOfJoin;
+          this.employee.empId = this.Id;
+          this.employee.state = this.state;
+          this.employee.skills = this.convertSkillsArray();
+          this.saved = false;
+        }
         this.getAutoCompleteItems();
       } else {
         this.clear();
@@ -144,18 +162,19 @@ export class EmployeeComponent implements OnInit {
     return newSkills;
   }
 
-  search() {
-    let searchCriteria = (<HTMLInputElement>document.getElementById('searchBy'))
-      .value;
+  compSearch() {
+    const searchCriteria = (<HTMLInputElement>document.getElementById(
+      'searchBy'
+    )).value;
     if (searchCriteria === '') {
-      searchCriteria = '........';
+      return this.getAll();
     }
     return this.http
       .get(this.apiUrl + '/findEmployee/' + searchCriteria)
       .pipe(map((res: Response) => res.json()))
       .subscribe(employee => {
         if (employee !== null) {
-          this.employees = employee;
+          this.data = employee;
         }
       });
   }
@@ -181,6 +200,7 @@ export class EmployeeComponent implements OnInit {
               this.options
             )
             .subscribe(finalResult => {
+              this.saved = true;
               this.router.navigate(['/employee', { id: this.resultId }]);
             });
         });
@@ -224,17 +244,15 @@ export class EmployeeComponent implements OnInit {
   }
 
   deleteEmployee() {
-    if (confirm('Are you sure you want to delete ' + this.firstName + '?')) {
-      this.httpclient
-        .delete(this.apiUrl + '/api/skills/' + this.Id, this.options)
-        .subscribe(result => {
-          this.httpclient
-            .delete(this.apiUrl + '/api/employees/' + this.Id, this.options)
-            .subscribe(finalResult => {
-              this.router.navigate(['/employee']);
-            });
-        });
-    }
+    this.httpclient
+      .delete(this.apiUrl + '/api/skills/' + this.Id, this.options)
+      .subscribe(result => {
+        this.httpclient
+          .delete(this.apiUrl + '/api/employees/' + this.Id, this.options)
+          .subscribe(finalResult => {
+            this.router.navigate(['/employee']);
+          });
+      });
   }
 
   // Not in use
@@ -332,5 +350,29 @@ export class EmployeeComponent implements OnInit {
     } else {
       return `with: ${reason}`;
     }
+  }
+
+  search() {
+    const searchCriteria = (<HTMLInputElement>document.getElementById(
+      'skillInput'
+    )).value;
+    if (searchCriteria === '') {
+      return this.getAll();
+    }
+    return this.http
+      .get(this.apiUrl + '/get/' + searchCriteria)
+      .pipe(map((res: Response) => res.json()))
+      .subscribe(data => {
+        this.data = data;
+      });
+  }
+
+  getAll() {
+    return this.http
+      .get(this.apiUrl + '/getAll')
+      .pipe(map((res: Response) => res.json()))
+      .subscribe(data => {
+        this.data = data;
+      });
   }
 }
