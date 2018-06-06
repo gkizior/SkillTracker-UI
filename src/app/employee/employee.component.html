@@ -21,7 +21,7 @@
     </div>
     <div style="text-align: right; width:50%; display: inline-block">
       <input (keyup.enter)="search()" id="skillInput" placeholder="Type Skill to search by">
-      <button class="btn btn-primary" (click)="search()">Search</button>
+      <button class="btn btn-primary" (click)="search()">Skill Search</button>
       <button type="button" class="btn btn-info" (click)="open(defaultModal)">Add Employee</button>
     </div>
   </div>
@@ -47,14 +47,6 @@
       </tbody>
     </table>
   </div>
-
-  <!-- 
-  <div>
-    <tr *ngFor="let emp of employees">
-      <a [routerLink]="['/employee', { id: emp.empId }]">{{emp.firstName}} {{emp.lastName}}</a>
-    </tr>
-  </div> -->
-
 </div>
 
 <ng-template #defaultModal let-c="close" let-d="dismiss">
@@ -121,11 +113,8 @@
     </div>
     <div>
       <label class="form-label">Skills</label>
-      <tag-input class="ngx-chips-primary" [(ngModel)]="skills" [editable]="!disabled" [disable]="disabled" secondaryPlaceholder="Enter a skill..."
-        placeholder="+Skill">
-        <tag-input-dropdown [showDropdownIfEmpty]="true" [autocompleteItems]="autocompleteItems">
-        </tag-input-dropdown>
-      </tag-input>
+      <ss-multiselect-dropdown [settings]="searchSettings" [options]="defaultOptions" [(ngModel)]="skills">
+      </ss-multiselect-dropdown>
     </div>
   </div>
   <div class="modal-footer">

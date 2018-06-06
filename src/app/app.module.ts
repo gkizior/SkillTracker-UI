@@ -19,6 +19,7 @@ import { LayoutModule } from './layout/layout.module';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { TagInputModule } from 'ngx-chips';
 import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
+import { MultiselectDropdownModule } from 'angular-2-dropdown-multiselect';
 
 // *******************************************************************************
 // Pages
@@ -55,7 +56,8 @@ import { StatsComponent } from './stats/stats.component';
     TagInputModule,
     FormsModule,
     ConfirmationPopoverModule.forRoot(),
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MultiselectDropdownModule
   ],
 
   providers: [Title, AppService],

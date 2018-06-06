@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Employee } from './employee';
+import { IMultiSelectOption } from 'angular-2-dropdown-multiselect';
 
 @Component({
   selector: 'app-employee',
@@ -46,11 +47,14 @@ export class EmployeeComponent implements OnInit {
 
   resultId: any;
 
-  autocompleteItems = ['Java', 'AWS', 'Spring', 'Angular', 'DOT NET', 'C#'];
   disabled = false;
 
   data: any;
   saved = false;
+
+  defaultOptions: IMultiSelectOption[] = [];
+  searchSettings: any;
+  defaultModel: number[];
 
   constructor(
     private appService: AppService,
@@ -61,6 +65,10 @@ export class EmployeeComponent implements OnInit {
     private httpclient: HttpClient
   ) {
     this.appService.pageTitle = 'Employee';
+    this.searchSettings = {
+      enableSearch: true,
+      pullRight: appService.isRTL
+    };
     this.getAll();
     this.clear();
   }
@@ -71,6 +79,7 @@ export class EmployeeComponent implements OnInit {
       this.Id = params['id'];
       if (this.enteredId) {
         this.employees = [];
+        this.getOptions();
         if (!this.saved) {
           this.getEmployee();
         } else {
@@ -86,19 +95,21 @@ export class EmployeeComponent implements OnInit {
           this.employee.skills = this.convertSkillsArray();
           this.saved = false;
         }
-        this.getAutoCompleteItems();
       } else {
         this.clear();
       }
     });
   }
 
-  getAutoCompleteItems() {
+  getOptions() {
     this.http
       .get(this.apiUrl + '/getAllSkills')
       .pipe(map((res: Response) => res.json()))
       .subscribe(items => {
-        this.autocompleteItems = items;
+        this.defaultOptions = [];
+        for (let i = 0; i < items.length; i++) {
+          this.defaultOptions[i] = { id: i, name: items[i] };
+        }
       });
   }
 
@@ -133,9 +144,20 @@ export class EmployeeComponent implements OnInit {
     this.city = employee.city;
     this.zipcode = employee.zipcode;
     if (!update) {
-      this.skills = employee.skills;
+      this.castToMultiSelect(employee.skills);
     }
     this.showAddressChange();
+  }
+
+  castToMultiSelect(skills) {
+    this.skills = [];
+    for (let i = 0; i < skills.length; i++) {
+      for (let j = 0; j < this.defaultOptions.length; j++) {
+        if (this.defaultOptions[i].name === skills[i]) {
+          this.skills[i] = this.defaultOptions[i].id;
+        }
+      }
+    }
   }
 
   showAddressChange() {
@@ -152,14 +174,19 @@ export class EmployeeComponent implements OnInit {
     newSkills = [];
     if (this.skills != null) {
       for (let i = 0; i < this.skills.length; i++) {
-        if (typeof this.skills[i] === 'string') {
-          newSkills[i] = this.skills[i];
-        } else {
-          newSkills[i] = this.skills[i].value;
-        }
+        newSkills[i] = this.getSkill(this.skills[i]);
       }
     }
     return newSkills;
+  }
+
+  getSkill(id) {
+    for (let i = 0; i < this.defaultOptions.length; i++) {
+      if (id === this.defaultOptions[i].id) {
+        return this.defaultOptions[i].name;
+      }
+    }
+    return '';
   }
 
   compSearch() {
@@ -252,47 +279,6 @@ export class EmployeeComponent implements OnInit {
           .subscribe(finalResult => {
             this.router.navigate(['/employee']);
           });
-      });
-  }
-
-  // Not in use
-  addSkill() {
-    const skill = (<HTMLInputElement>document.getElementById('addSkillInput'))
-      .value;
-    if (skill === null || skill === undefined) {
-      alert('Not updated. Missing required information');
-    } else {
-      const skillJson = new Object();
-      skillJson['skills'] = ['' + skill];
-      try {
-        this.httpclient
-          .post(this.apiUrl + '/api/skills/' + this.Id, skillJson, this.options)
-          .subscribe(
-            result => {
-              if (this.employee.skills === null) {
-                this.employee.skills = [];
-              }
-              this.employee.skills.push(skill);
-              this.skills = this.employee.skills;
-            },
-            error => {
-              alert('Error adding skill. Skill already exists');
-            }
-          );
-      } catch (e) {
-        console.log(e);
-      }
-    }
-  }
-
-  // Not in use
-  deleteSkill(id, skill) {
-    const skillJson = new Object();
-    skillJson['skills'] = ['' + skill];
-    this.httpclient
-      .put(this.apiUrl + '/api/skills/remove/' + id, skillJson, this.options)
-      .subscribe(result => {
-        this.skills.splice(this.skills.indexOf(skill), 1);
       });
   }
 
