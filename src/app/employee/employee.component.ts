@@ -77,9 +77,10 @@ export class EmployeeComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.enteredId = params['id'] !== undefined ? true : false;
       this.Id = params['id'];
+      this.getOptions();
       if (this.enteredId) {
         this.employees = [];
-        this.getOptions();
+        // this.getOptions();
         if (!this.saved) {
           this.getEmployee();
         } else {
