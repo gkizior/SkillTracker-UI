@@ -32,6 +32,7 @@ import { EmployeeComponent } from './employee/employee.component';
 
 import { HttpModule } from '@angular/http';
 import { StatsComponent } from './stats/stats.component';
+import { SkillComponent } from './skill/skill.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { StatsComponent } from './stats/stats.component';
     // Pages
     HomeComponent,
     EmployeeComponent,
-    StatsComponent
+    StatsComponent,
+    SkillComponent
   ],
 
   imports: [

@@ -103,13 +103,14 @@ export class EmployeeComponent implements OnInit {
 
   getOptions() {
     this.http
-      .get(this.apiUrl + '/getAllSkills')
+      .get(this.apiUrl + '/api/skills/unique')
       .pipe(map((res: Response) => res.json()))
       .subscribe(items => {
         this.defaultOptions = [];
         for (let i = 0; i < items.length; i++) {
           this.defaultOptions[i] = { id: i, name: items[i] };
         }
+        this.castToMultiSelect(this.employee.skills);
       });
   }
 
@@ -153,8 +154,8 @@ export class EmployeeComponent implements OnInit {
     this.skills = [];
     for (let i = 0; i < skills.length; i++) {
       for (let j = 0; j < this.defaultOptions.length; j++) {
-        if (this.defaultOptions[i].name === skills[i]) {
-          this.skills[i] = this.defaultOptions[i].id;
+        if (this.defaultOptions[j].name === skills[i]) {
+          this.skills[i] = this.defaultOptions[j].id;
         }
       }
     }
