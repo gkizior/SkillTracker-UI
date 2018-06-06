@@ -1,10 +1,39 @@
 <h4 class="font-weight-bold py-3 mb-4">Skill</h4>
 
-<input [(ngModel)]="skill" placeholder="Skill to add..." />
-<button class="btn btn-primary" (click)="newSkill()">Add New Skill</button>
+<button class="btn btn-primary" (click)="open(defaultModal)">Add New Skill</button>
 
 <div style="height: 500px">
   <ngx-charts-bar-vertical [results]="chartData" [xAxis]="true" [yAxis]="true" [legend]="true" [showXAxisLabel]="true" [showYAxisLabel]="true"
     [scheme]="'vivid'" xAxisLabel="Country" yAxisLabel="Population">
   </ngx-charts-bar-vertical>
 </div>
+
+<ng-template #defaultModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h5 class="modal-title">
+      <div>New
+        <span class="font-weight-light">Skill</span>
+      </div>
+      <br>
+      <small class="text-muted">Enter all of the below information</small>
+    </h5>
+    <button type="button" class="close" (click)="d('Cross click')">&times;</button>
+  </div>
+  <div class="modal-body">
+    <div class="form-row">
+      <div class="form-group col mb-0">
+        <input [(ngModel)]="skill" type="text" class="form-control" placeholder="Skill to add...">
+      </div>
+    </div>
+    <div>
+      <label class="form-label">Employees to give inputted skill: </label>
+      <ss-multiselect-dropdown [settings]="searchSettings" [options]="empOptions" [(ngModel)]="emps">
+      </ss-multiselect-dropdown>
+      {{emps}}
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" (click)="c('Close click')">Close</button>
+    <button *ngIf="!enteredId" type="button" class="btn btn-primary" (click)="newSkill(); c('Close click')">Save</button>
+  </div>
+</ng-template>
