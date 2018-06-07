@@ -43,7 +43,10 @@ const routes: Routes = [
   {
     path: 'skill',
     component: Layout1Component,
-    children: [{ path: '', component: SkillComponent }]
+    children: [
+      { path: '', component: SkillComponent },
+      { path: ':skill', component: SkillComponent }
+    ]
   }
 ];
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
 
 import { AppService } from '../app.service';
 
@@ -7,6 +7,7 @@ import { map } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { IMultiSelectOption } from 'angular-2-dropdown-multiselect';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-skill',
@@ -33,11 +34,19 @@ export class SkillComponent implements OnInit {
   empOptions: IMultiSelectOption[] = [];
   searchSettings: any;
 
+  skills: any;
+
+  enteredSkill: boolean;
+  routeSkill: any;
+
+  datas: any;
+
   constructor(
     private appService: AppService,
     private http: Http,
     private httpclient: HttpClient,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private route: ActivatedRoute
   ) {
     this.appService.pageTitle = 'Skill';
     this.searchSettings = {
@@ -50,12 +59,27 @@ export class SkillComponent implements OnInit {
         value: ''
       }
     ];
+
+    this.skills = [
+      {
+        skill: '',
+        number: ''
+      }
+    ];
   }
 
   ngOnInit() {
-    this.uniqueSkills();
-    this.getSkillGraph();
-    this.getAll();
+    this.route.params.subscribe(params => {
+      this.enteredSkill = params['skill'] !== undefined ? true : false;
+      this.routeSkill = params['skill'];
+      if (this.enteredSkill) {
+        this.getSkillDatas(this.routeSkill);
+      } else {
+        this.uniqueSkills();
+        this.getSkillGraph();
+        this.getAll();
+      }
+    });
   }
 
   newSkill() {
@@ -99,6 +123,16 @@ export class SkillComponent implements OnInit {
       .get(this.apiUrl + '/getSkillGraph', this.options)
       .subscribe(data => {
         this.chartData = data;
+      });
+  }
+
+  getSkillDatas(skill) {
+    const name = new Object();
+    name['name'] = skill;
+    return this.httpclient
+      .post(this.apiUrl + '/getSkillDatas', name, this.options)
+      .subscribe(data => {
+        this.datas = data;
       });
   }
 

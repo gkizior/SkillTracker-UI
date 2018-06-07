@@ -20,6 +20,7 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { TagInputModule } from 'ngx-chips';
 import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
 import { MultiselectDropdownModule } from 'angular-2-dropdown-multiselect';
+import { ChartsModule as Ng2ChartsModule } from 'ng2-charts/ng2-charts';
 
 // *******************************************************************************
 // Pages
@@ -59,7 +60,8 @@ import { SkillComponent } from './skill/skill.component';
     FormsModule,
     ConfirmationPopoverModule.forRoot(),
     BrowserAnimationsModule,
-    MultiselectDropdownModule
+    MultiselectDropdownModule,
+    Ng2ChartsModule
   ],
 
   providers: [Title, AppService],
