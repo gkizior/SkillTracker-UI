@@ -62,6 +62,7 @@
   </div>
 </div>
 <div *ngIf="enteredSkill">
+  <h2>{{routeSkill}}</h2>
   <div class="card-deck">
     <div *ngFor="let data of datas" class="card text-center" style="position: relative; width: 20%; height: 0; padding-bottom: 20%;">
       <h6 class="card-title">{{data.name}}
@@ -70,6 +71,21 @@
       <ngx-charts-pie-chart [results]="data.listSeries" [legend]="false" [explodeSlices]="true" [labels]="false" [scheme]="'vivid'"
         [doughnut]="true" style="position: absolute;">
       </ngx-charts-pie-chart>
+      <!-- <div class="card-footer">
+        <table>
+          <tr *ngFor="let emp of data.emps">{{emp.firstName}} {{emp.lastName}}</tr>
+        </table>
+      </div> -->
     </div>
   </div>
+  <div class="card-deck">
+    <div *ngFor="let data of datas" class="card">
+      <table>
+        <tr *ngFor="let emp of data.emps">
+          <a [routerLink]="['/employee', { id: emp.empId }]">{{emp.firstName}} {{emp.lastName}}</a>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <button class="btn btn-danger" (click)="removeAll()">Delete Skill</button>
 </div>

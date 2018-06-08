@@ -6,7 +6,9 @@
   <p>Career Level: {{employee.careerLevel}}</p>
   <p *ngIf="showAddress">Address: {{employee.address}} {{employee.city}}, {{employee.state}} {{employee.zipcode}}</p>
   <p *ngIf="skills != null">Skills:</p>
-  <tr *ngFor="let skill of employee.skills">{{skill}}</tr>
+  <tr *ngFor="let skill of employee.skills">
+    <a [routerLink]="['/skill', { skill: skill }]">{{skill}}</a>
+  </tr>
   <button type="button" class="btn btn-info" (click)="open(defaultModal)">Update Employee</button>
   <button mwlConfirmationPopover class="btn btn-danger" popoverTitle="Delete Employee" popoverMessage="Are you sure you want to delete {{employee.firstName}} {{employee.lastName}}?"
     [placement]="isRTL ? 'left' : 'right'" (confirm)="deleteEmployee()">Delete Employee</button>

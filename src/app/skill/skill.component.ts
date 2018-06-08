@@ -46,7 +46,8 @@ export class SkillComponent implements OnInit {
     private http: Http,
     private httpclient: HttpClient,
     private modalService: NgbModal,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {
     this.appService.pageTitle = 'Skill';
     this.searchSettings = {
@@ -151,11 +152,14 @@ export class SkillComponent implements OnInit {
       });
   }
 
-  removeAll(skill) {
-    console.log(skill);
+  removeAll() {
+    const skill = new Object();
+    skill['name'] = this.routeSkill;
     return this.httpclient
-      .delete(this.apiUrl + '/api/skills/removeAll/' + skill, this.options)
-      .subscribe();
+      .put(this.apiUrl + '/api/skills/removeAll', skill, this.options)
+      .subscribe(data => {
+        this.router.navigate(['/skill']);
+      });
   }
 
   open(content, options = {}) {
