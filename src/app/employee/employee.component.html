@@ -1,17 +1,42 @@
 <h4 class="font-weight-bold py-3 mb-4">Employee</h4>
 <div *ngIf="enteredId">
-  <h5 *ngIf="enteredId">{{employee.firstName}} {{employee.lastName}}</h5>
+  <div class="media align-items-center py-3 mb-3">
+    <img src="http://itibalasore.org/wp-content/uploads/2018/02/default-user-male-300x284.png" alt="" class="d-block ui-w-100 rounded-circle">
+    <div class="media-body ml-4">
+      <h4 class="font-weight-bold mb-0">{{employee.firstName}} {{employee.lastName}}
+        <span class="text-muted font-weight-normal">{{email}}</span>
+      </h4>
+      <div class="text-muted mb-2">ID: {{Id}}</div>
+      <button class="btn btn-info btn-sm" (click)="open(defaultModal)">Edit</button>&nbsp;
+      <button mwlConfirmationPopover class="btn btn-danger btn-sm" popoverTitle="Delete Employee" popoverMessage="Are you sure you want to delete {{employee.firstName}} {{employee.lastName}}?"
+        [placement]="isRTL ? 'left' : 'right'" (confirm)="deleteEmployee()">Delete</button>&nbsp;
+    </div>
+  </div>
 
-  <p>Employee Id: {{Id}}</p>
-  <p>Career Level: {{employee.careerLevel}}</p>
-  <p *ngIf="showAddress">Address: {{employee.address}} {{employee.city}}, {{employee.state}} {{employee.zipcode}}</p>
-  <p *ngIf="skills != null">Skills:</p>
-  <tr *ngFor="let skill of employee.skills">
-    <a [routerLink]="['/skill', { skill: skill }]">{{skill}}</a>
-  </tr>
-  <button type="button" class="btn btn-info" (click)="open(defaultModal)">Update Employee</button>
-  <button mwlConfirmationPopover class="btn btn-danger" popoverTitle="Delete Employee" popoverMessage="Are you sure you want to delete {{employee.firstName}} {{employee.lastName}}?"
-    [placement]="isRTL ? 'left' : 'right'" (confirm)="deleteEmployee()">Delete Employee</button>
+  <div class="card mb-4">
+    <div class="card-body">
+      <table class="table user-view-table m-0">
+        <tbody>
+          <tr>
+            <td>Career Level:</td>
+            <td>{{employee.careerLevel}}</td>
+          </tr>
+          <tr>
+            <td>Address:</td>
+            <td>{{employee.address}} {{employee.city}}, {{employee.state}} {{employee.zipcode}}</td>
+          </tr>
+          <tr>
+            <td>Skills:</td>
+            <td>
+              <tr *ngFor="let skill of employee.skills">
+                <a [routerLink]="['/skill', { skill: skill }]">{{skill}}</a>
+              </tr>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
 </div>
 

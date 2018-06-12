@@ -43,6 +43,7 @@ export class EmployeeComponent implements OnInit {
   city: string;
   state: string;
   zipcode: string;
+  email: string;
   skills = [];
 
   resultId: any;
@@ -95,11 +96,20 @@ export class EmployeeComponent implements OnInit {
           this.employee.state = this.state;
           this.employee.skills = this.convertSkillsArray();
           this.saved = false;
+          this.makeEmail();
         }
       } else {
         this.clear();
       }
     });
+  }
+
+  makeEmail() {
+    let email = '';
+    email += this.firstName.charAt(0).toLowerCase();
+    email += this.lastName.toLowerCase();
+    email += '@wmp.com';
+    this.email = email;
   }
 
   getOptions() {
@@ -149,6 +159,7 @@ export class EmployeeComponent implements OnInit {
       this.castToMultiSelect(employee.skills);
     }
     this.showAddressChange();
+    this.makeEmail();
   }
 
   castToMultiSelect(skills) {
@@ -192,8 +203,8 @@ export class EmployeeComponent implements OnInit {
   }
 
   compSearch() {
-    const searchCriteria = (<HTMLInputElement>document.getElementById(
-      'searchBy'
+    const searchCriteria = (<HTMLInputElement>(
+      document.getElementById('searchBy')
     )).value;
     if (searchCriteria === '') {
       return this.getAll();
@@ -341,8 +352,8 @@ export class EmployeeComponent implements OnInit {
   }
 
   search() {
-    const searchCriteria = (<HTMLInputElement>document.getElementById(
-      'skillInput'
+    const searchCriteria = (<HTMLInputElement>(
+      document.getElementById('skillInput')
     )).value;
     if (searchCriteria === '') {
       return this.getAll();
