@@ -50,12 +50,11 @@
             <label class="form-label">Employees to give inputted skill: </label>
             <ss-multiselect-dropdown [settings]="searchSettings" [options]="empOptions" [(ngModel)]="emps">
             </ss-multiselect-dropdown>
-            {{emps}}
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" (click)="c('Close click')">Close</button>
-          <button *ngIf="!enteredId" type="button" class="btn btn-primary" (click)="newSkill(); c('Close click')">Save</button>
+          <button *ngIf="!enteredId" type="button" class="btn btn-primary" (click)="newSkill(false); c('Close click')">Save</button>
         </div>
       </ng-template>
     </div>
@@ -71,11 +70,6 @@
       <ngx-charts-pie-chart [results]="data.listSeries" [legend]="false" [explodeSlices]="true" [labels]="false" [scheme]="'vivid'"
         [doughnut]="true" style="position: absolute;">
       </ngx-charts-pie-chart>
-      <!-- <div class="card-footer">
-        <table>
-          <tr *ngFor="let emp of data.emps">{{emp.firstName}} {{emp.lastName}}</tr>
-        </table>
-      </div> -->
     </div>
   </div>
   <div class="card-deck">
@@ -87,5 +81,10 @@
       </table>
     </div>
   </div>
-  <button class="btn btn-danger" (click)="removeAll()">Delete Skill</button>
+  <label class="form-label">Employees to give inputted skill: </label>
+  <ss-multiselect-dropdown [settings]="searchSettings" [options]="empOptions" [(ngModel)]="emps">
+  </ss-multiselect-dropdown>
+  <button class="btn btn-info" (click)="newSkill(true)">Add Skill to selected Employees</button>
+  <button mwlConfirmationPopover class="btn btn-danger" popoverTitle="Delete Skill" popoverMessage="Are you sure you want to delete {{routeSkill}}?"
+    [placement]="isRTL ? 'left' : 'right'" (confirm)="removeAll()">Delete Skill</button>
 </div>

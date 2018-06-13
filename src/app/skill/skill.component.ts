@@ -75,6 +75,7 @@ export class SkillComponent implements OnInit {
       this.routeSkill = params['skill'];
       if (this.enteredSkill) {
         this.getSkillDatas(this.routeSkill);
+        this.getAll();
       } else {
         this.uniqueSkills();
         this.getSkillGraph();
@@ -83,14 +84,19 @@ export class SkillComponent implements OnInit {
     });
   }
 
-  newSkill() {
+  newSkill(addingEmps) {
     if (this.skill === undefined || this.skill === null || this.skill === '') {
-      alert('Need to input a skill');
-      return;
+      if (!addingEmps) {
+        alert('Need to input a skill');
+        return;
+      }
     }
     if (this.emps !== undefined && this.emps !== []) {
       const empIdsObject = new Object();
       empIdsObject['empIds'] = this.emps;
+      if (addingEmps) {
+        this.skill = this.routeSkill;
+      }
       return this.httpclient
         .post(
           this.apiUrl + '/api/skills/create/' + this.skill,
@@ -98,6 +104,10 @@ export class SkillComponent implements OnInit {
           this.options
         )
         .subscribe(result => {
+          this.emps = [];
+          if (addingEmps) {
+            this.router.navigate(['/skill']);
+          }
           this.getSkillGraph();
         });
     } else {
