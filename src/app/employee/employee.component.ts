@@ -6,7 +6,10 @@ import { map } from 'rxjs/operators';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Employee } from './employee';
-import { IMultiSelectOption } from 'angular-2-dropdown-multiselect';
+import {
+  IMultiSelectOption,
+  IMultiSelectTexts
+} from 'angular-2-dropdown-multiselect';
 
 @Component({
   selector: 'app-employee',
@@ -56,6 +59,10 @@ export class EmployeeComponent implements OnInit {
   defaultOptions: IMultiSelectOption[] = [];
   searchSettings: any;
   defaultModel: number[];
+
+  myTexts: IMultiSelectTexts = {
+    defaultTitle: 'Search Skills'
+  };
 
   constructor(
     private appService: AppService,
@@ -351,19 +358,19 @@ export class EmployeeComponent implements OnInit {
     }
   }
 
-  search() {
-    const searchCriteria = (<HTMLInputElement>(
-      document.getElementById('skillInput')
-    )).value;
-    if (searchCriteria === '') {
-      return this.getAll();
+  onChange(event) {
+    console.log(event);
+    if (event.length === 0) {
+      this.getAll();
+    } else {
+      const skillObject = this.makeSkillJSON();
+      this.httpclient
+        .put(this.apiUrl + '/getSkillsDrop', skillObject, this.options)
+        .subscribe(result => {
+          console.log(result);
+          this.data = result;
+        });
     }
-    return this.http
-      .get(this.apiUrl + '/get/' + searchCriteria)
-      .pipe(map((res: Response) => res.json()))
-      .subscribe(data => {
-        this.data = data;
-      });
   }
 
   getAll() {

@@ -18,15 +18,21 @@
       <table class="table user-view-table m-0">
         <tbody>
           <tr>
-            <td>Career Level:</td>
+            <td>
+              <b>Career Level:</b>
+            </td>
             <td>{{employee.careerLevel}}</td>
           </tr>
-          <tr>
-            <td>Address:</td>
+          <tr *ngIf="showAddress">
+            <td>
+              <b>Address:</b>
+            </td>
             <td>{{employee.address}} {{employee.city}}, {{employee.state}} {{employee.zipcode}}</td>
           </tr>
           <tr>
-            <td>Skills:</td>
+            <td>
+              <b>Skills:</b>
+            </td>
             <td>
               <tr *ngFor="let skill of employee.skills">
                 <a [routerLink]="['/skill', { skill: skill }]">{{skill}}</a>
@@ -47,9 +53,10 @@
       <button class="btn btn-primary" (click)="compSearch()">Comprehensive Search</button>
     </div>
     <div style="text-align: right; width:50%; display: inline-block">
-      <input (keyup.enter)="search()" id="skillInput" placeholder="Type Skill to search by">
-      <button class="btn btn-primary" (click)="search()">Skill Search</button>
-      <button type="button" class="btn btn-info" (click)="open(defaultModal)">Add Employee</button>
+      <button type="button" class="btn btn-success" (click)="open(defaultModal)" style="float: right">Add Employee</button>
+      <ss-multiselect-dropdown class="btn btn-info" [settings]="searchSettings" [texts]="myTexts" [options]="defaultOptions" [(ngModel)]="skills"
+        (ngModelChange)="onChange($event)" style="float: right; padding: 0">
+      </ss-multiselect-dropdown>
     </div>
   </div>
 
