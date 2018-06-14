@@ -21,6 +21,7 @@ import { TagInputModule } from 'ngx-chips';
 import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
 import { MultiselectDropdownModule } from 'angular-2-dropdown-multiselect';
 import { ChartsModule as Ng2ChartsModule } from 'ng2-charts/ng2-charts';
+import { ToastrModule } from 'ngx-toastr';
 
 // *******************************************************************************
 // Pages
@@ -61,7 +62,8 @@ import { SkillComponent } from './skill/skill.component';
     ConfirmationPopoverModule.forRoot(),
     BrowserAnimationsModule,
     MultiselectDropdownModule,
-    Ng2ChartsModule
+    Ng2ChartsModule,
+    ToastrModule.forRoot()
   ],
 
   providers: [Title, AppService],

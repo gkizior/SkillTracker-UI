@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChildren,
+  QueryList,
+  ViewEncapsulation
+} from '@angular/core';
 
 import { AppService } from '../app.service';
 
@@ -8,10 +14,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { IMultiSelectOption } from 'angular-2-dropdown-multiselect';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-skill',
-  templateUrl: './skill.component.html'
+  templateUrl: './skill.component.html',
+  encapsulation: ViewEncapsulation.None,
+  styleUrls: ['../../vendor/libs/ngx-toastr/ngx-toastr.scss']
 })
 export class SkillComponent implements OnInit {
   private apiUrl = 'http://localhost:8080';
@@ -41,13 +50,25 @@ export class SkillComponent implements OnInit {
 
   datas: any;
 
+  title = '';
+  message = '';
+  type = 'success';
+  tapToDismiss = true;
+  closeButton = false;
+  progressBar2 = false;
+  preventDuplicates = false;
+  newestOnTop = false;
+  progressAnimation = 'decreasing';
+  positionClass = 'toast-top-right';
+
   constructor(
     private appService: AppService,
     private http: Http,
     private httpclient: HttpClient,
     private modalService: NgbModal,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    public toastrService: ToastrService
   ) {
     this.appService.pageTitle = 'Skill';
     this.searchSettings = {
@@ -86,7 +107,7 @@ export class SkillComponent implements OnInit {
 
   newSkill() {
     if (this.skill === undefined || this.skill === null || this.skill === '') {
-      alert('Need to input a skill');
+      this.showToast('error', 'Need to input a skill');
       return;
     }
     if (this.emps !== undefined && this.emps !== []) {
@@ -97,6 +118,7 @@ export class SkillComponent implements OnInit {
         .post(this.apiUrl + '/api/skills/create', empIdsObject, this.options)
         .subscribe(result => {
           this.getSkillGraph();
+          this.showToast('success', 'Created ' + this.skill);
         });
     } else {
       const skillObject = new Object();
@@ -105,6 +127,10 @@ export class SkillComponent implements OnInit {
         .post(this.apiUrl + '/api/skills', skillObject, this.options)
         .subscribe(result => {
           this.getSkillGraph();
+          this.showToast(
+            'success',
+            'Created ' + this.skill + ' with employees'
+          );
         });
     }
   }
@@ -117,6 +143,7 @@ export class SkillComponent implements OnInit {
       .put(this.apiUrl + '/api/skills/update', empIdsObject, this.options)
       .subscribe(result => {
         this.emps = [];
+        this.showToast('success', 'Updated ' + this.routeSkill);
         this.router.navigate(['/skill']);
       });
   }
@@ -174,6 +201,7 @@ export class SkillComponent implements OnInit {
     return this.httpclient
       .put(this.apiUrl + '/api/skills/removeAll', skill, this.options)
       .subscribe(data => {
+        this.showToast('success', 'Removed ' + this.routeSkill);
         this.router.navigate(['/skill']);
       });
   }
@@ -197,5 +225,23 @@ export class SkillComponent implements OnInit {
     } else {
       return `with: ${reason}`;
     }
+  }
+
+  showToast(type, message) {
+    this.type = type;
+    const options = {
+      tapToDismiss: this.tapToDismiss,
+      closeButton: this.closeButton,
+      progressBar: this.progressBar2,
+      progressAnimation: this.progressAnimation,
+      positionClass: this.positionClass,
+      rtl: this.appService.isRTL
+    };
+
+    // `newestOnTop` and `preventDuplicates` options must be set on global config
+    this.toastrService.toastrConfig.newestOnTop = this.newestOnTop;
+    this.toastrService.toastrConfig.preventDuplicates = this.preventDuplicates;
+
+    this.toastrService[this.type](this.message || message, this.title, options);
   }
 }

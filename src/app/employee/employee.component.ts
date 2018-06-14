@@ -10,12 +10,16 @@ import {
   IMultiSelectOption,
   IMultiSelectTexts
 } from 'angular-2-dropdown-multiselect';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-employee',
   templateUrl: './employee.component.html',
   encapsulation: ViewEncapsulation.None,
-  styleUrls: ['../../vendor/libs/ngx-chips/ngx-chips.scss']
+  styleUrls: [
+    '../../vendor/libs/ngx-chips/ngx-chips.scss',
+    '../../vendor/libs/ngx-toastr/ngx-toastr.scss'
+  ]
 })
 export class EmployeeComponent implements OnInit {
   private apiUrl = 'http://localhost:8080';
@@ -66,13 +70,25 @@ export class EmployeeComponent implements OnInit {
     defaultTitle: 'Search Skills'
   };
 
+  title = '';
+  message = '';
+  type = 'success';
+  tapToDismiss = true;
+  closeButton = false;
+  progressBar2 = false;
+  preventDuplicates = false;
+  newestOnTop = false;
+  progressAnimation = 'decreasing';
+  positionClass = 'toast-top-right';
+
   constructor(
     private appService: AppService,
     private route: ActivatedRoute,
     private http: Http,
     private router: Router,
     private modalService: NgbModal,
-    private httpclient: HttpClient
+    private httpclient: HttpClient,
+    public toastrService: ToastrService
   ) {
     this.appService.pageTitle = 'Employee';
     this.searchSettings = {
@@ -266,11 +282,11 @@ export class EmployeeComponent implements OnInit {
 
   save() {
     if (
-      this.firstName === '' ||
-      this.lastName === '' ||
-      this.careerLevel === ''
+      this.firstName === null ||
+      this.lastName === null ||
+      this.careerLevel === null
     ) {
-      window.alert('Not saved. Missing required information');
+      this.showToast('error', 'Not saved. Missing required information');
     } else {
       const employeeJson = this.makeEmployeeJSON();
       const skillsJson = this.makeSkillJSON();
@@ -287,6 +303,10 @@ export class EmployeeComponent implements OnInit {
             .subscribe(finalResult => {
               this.saved = true;
               this.router.navigate(['/employee', { id: this.resultId }]);
+              this.showToast(
+                'success',
+                'Created ' + this.firstName + ' ' + this.lastName
+              );
             });
         });
     }
@@ -294,11 +314,11 @@ export class EmployeeComponent implements OnInit {
 
   updateEmployee() {
     if (
-      this.firstName === '' ||
-      this.lastName === '' ||
-      this.careerLevel === ''
+      this.firstName === null ||
+      this.lastName === null ||
+      this.careerLevel === null
     ) {
-      window.alert('Not updated. Missing required information');
+      this.showToast('error', 'Not updated. Missing required information');
     } else {
       const employeeJson = this.makeEmployeeJSON();
       this.httpclient
@@ -323,6 +343,10 @@ export class EmployeeComponent implements OnInit {
             )
             .subscribe(finalResult => {
               this.employee.skills = this.convertSkillsArray();
+              this.showToast(
+                'success',
+                'Updated ' + this.firstName + ' ' + this.lastName
+              );
             });
         });
     }
@@ -335,6 +359,10 @@ export class EmployeeComponent implements OnInit {
         this.httpclient
           .delete(this.apiUrl + '/api/employees/' + this.Id, this.options)
           .subscribe(finalResult => {
+            this.showToast(
+              'success',
+              'Deleted ' + this.firstName + ' ' + this.lastName
+            );
             this.router.navigate(['/employee']);
           });
       });
@@ -405,6 +433,7 @@ export class EmployeeComponent implements OnInit {
         .put(this.apiUrl + '/getSkillsDrop', skillObject, this.options)
         .subscribe(result => {
           this.data = result;
+          this.showToast('success', 'Searching by ' + skillObject['skills']);
         });
     }
   }
@@ -416,5 +445,23 @@ export class EmployeeComponent implements OnInit {
       .subscribe(data => {
         this.data = data;
       });
+  }
+
+  showToast(type, message) {
+    this.type = type;
+    const options = {
+      tapToDismiss: this.tapToDismiss,
+      closeButton: this.closeButton,
+      progressBar: this.progressBar2,
+      progressAnimation: this.progressAnimation,
+      positionClass: this.positionClass,
+      rtl: this.appService.isRTL
+    };
+
+    // `newestOnTop` and `preventDuplicates` options must be set on global config
+    this.toastrService.toastrConfig.newestOnTop = this.newestOnTop;
+    this.toastrService.toastrConfig.preventDuplicates = this.preventDuplicates;
+
+    this.toastrService[this.type](this.message || message, this.title, options);
   }
 }
