@@ -359,7 +359,6 @@ export class EmployeeComponent implements OnInit {
   }
 
   onChange(event) {
-    console.log(event);
     if (event.length === 0) {
       this.getAll();
     } else {
@@ -367,7 +366,6 @@ export class EmployeeComponent implements OnInit {
       this.httpclient
         .put(this.apiUrl + '/getSkillsDrop', skillObject, this.options)
         .subscribe(result => {
-          console.log(result);
           this.data = result;
         });
     }

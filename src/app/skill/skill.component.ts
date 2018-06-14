@@ -29,7 +29,7 @@ export class SkillComponent implements OnInit {
 
   chartData: any;
 
-  emps: any;
+  emps: any = [];
 
   empOptions: IMultiSelectOption[] = [];
   searchSettings: any;
@@ -73,9 +73,9 @@ export class SkillComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.enteredSkill = params['skill'] !== undefined ? true : false;
       this.routeSkill = params['skill'];
+      this.emps = [];
       if (this.enteredSkill) {
         this.getSkillDatas(this.routeSkill);
-        this.getAll();
       } else {
         this.uniqueSkills();
         this.getSkillGraph();
@@ -84,30 +84,18 @@ export class SkillComponent implements OnInit {
     });
   }
 
-  newSkill(addingEmps) {
+  newSkill() {
     if (this.skill === undefined || this.skill === null || this.skill === '') {
-      if (!addingEmps) {
-        alert('Need to input a skill');
-        return;
-      }
+      alert('Need to input a skill');
+      return;
     }
     if (this.emps !== undefined && this.emps !== []) {
       const empIdsObject = new Object();
       empIdsObject['empIds'] = this.emps;
-      if (addingEmps) {
-        this.skill = this.routeSkill;
-      }
+      empIdsObject['skill'] = this.skill;
       return this.httpclient
-        .post(
-          this.apiUrl + '/api/skills/create/' + this.skill,
-          empIdsObject,
-          this.options
-        )
+        .post(this.apiUrl + '/api/skills/create', empIdsObject, this.options)
         .subscribe(result => {
-          this.emps = [];
-          if (addingEmps) {
-            this.router.navigate(['/skill']);
-          }
           this.getSkillGraph();
         });
     } else {
@@ -119,6 +107,18 @@ export class SkillComponent implements OnInit {
           this.getSkillGraph();
         });
     }
+  }
+
+  updateSkill() {
+    const empIdsObject = new Object();
+    empIdsObject['empIds'] = this.emps;
+    empIdsObject['skill'] = this.routeSkill;
+    return this.httpclient
+      .put(this.apiUrl + '/api/skills/update', empIdsObject, this.options)
+      .subscribe(result => {
+        this.emps = [];
+        this.router.navigate(['/skill']);
+      });
   }
 
   uniqueSkills() {
@@ -144,6 +144,7 @@ export class SkillComponent implements OnInit {
       .post(this.apiUrl + '/getSkillDatas', name, this.options)
       .subscribe(data => {
         this.datas = data;
+        this.getAll();
       });
   }
 
@@ -154,6 +155,11 @@ export class SkillComponent implements OnInit {
       .subscribe(data => {
         this.empOptions = [];
         for (let i = 0; i < data.length; i++) {
+          for (let j = 0; j < data[i].skills.length; j++) {
+            if (data[i].skills[j] === this.routeSkill) {
+              this.emps[this.emps.length] = data[i].empId;
+            }
+          }
           this.empOptions[i] = {
             id: data[i].empId,
             name: data[i].firstName + ' ' + data[i].lastName
