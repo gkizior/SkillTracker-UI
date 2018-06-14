@@ -53,6 +53,8 @@ export class EmployeeComponent implements OnInit {
 
   disabled = false;
 
+  bar: any = 0;
+
   data: any;
   saved = false;
 
@@ -104,11 +106,46 @@ export class EmployeeComponent implements OnInit {
           this.employee.skills = this.convertSkillsArray();
           this.saved = false;
           this.makeEmail();
+          this.progressBar();
         }
       } else {
         this.clear();
       }
     });
+  }
+
+  progressBar() {
+    this.bar = 0;
+    if (this.address !== null) {
+      this.bar += 10;
+    }
+    if (this.firstName !== null) {
+      this.bar += 10;
+    }
+    if (this.lastName !== null) {
+      this.bar += 10;
+    }
+    if (this.careerLevel !== null) {
+      this.bar += 10;
+    }
+    if (this.city !== null) {
+      this.bar += 10;
+    }
+    if (this.dateOfBirth !== null) {
+      this.bar += 10;
+    }
+    if (this.dateOfJoin !== null) {
+      this.bar += 10;
+    }
+    if (this.Id !== null) {
+      this.bar += 10;
+    }
+    if (this.state !== null) {
+      this.bar += 10;
+    }
+    if (this.skills !== null) {
+      this.bar += 10;
+    }
   }
 
   makeEmail() {
@@ -167,6 +204,7 @@ export class EmployeeComponent implements OnInit {
     }
     this.showAddressChange();
     this.makeEmail();
+    this.progressBar();
   }
 
   castToMultiSelect(skills) {

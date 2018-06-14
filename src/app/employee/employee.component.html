@@ -16,6 +16,10 @@
   <div class="card mb-4">
     <div class="card-body">
       <table class="table user-view-table m-0">
+        <td colspan="2">
+          <ngb-progressbar *ngIf="bar < 100" [showValue]="true" [value]="bar" [striped]="true" [animated]="true"></ngb-progressbar>
+          <ngb-progressbar *ngIf="bar >= 100" [showValue]="true" [value]="bar"></ngb-progressbar>
+        </td>
         <tbody>
           <tr>
             <td>

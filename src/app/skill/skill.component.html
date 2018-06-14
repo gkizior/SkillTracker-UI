@@ -84,7 +84,6 @@
   <label class="form-label">Employees to give inputted skill: </label>
   <ss-multiselect-dropdown [settings]="searchSettings" [options]="empOptions" [(ngModel)]="emps">
   </ss-multiselect-dropdown>
-  {{emps}}
   <button class="btn btn-info" (click)="updateSkill()">Update Skill to selected Employees</button>
   <button mwlConfirmationPopover class="btn btn-danger" popoverTitle="Delete Skill" popoverMessage="Are you sure you want to delete {{routeSkill}}?"
     [placement]="isRTL ? 'left' : 'right'" (confirm)="removeAll()">Delete Skill</button>
