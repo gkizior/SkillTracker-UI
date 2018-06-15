@@ -53,7 +53,8 @@
 <div *ngIf="!enteredId">
   <div class="row">
     <div class="col" style="text-align: left; width:49%; display: inline-block">
-      <tag-input class="ngx-chips-primary" [(ngModel)]="items" [editable]="true" (ngModelChange)="onChange($event)"></tag-input>
+      <tag-input class="ngx-chips-primary" secondaryPlaceholder="Search by..." placeholder="+ add" [(ngModel)]="items" [editable]="true"
+        (ngModelChange)="onChange($event)"></tag-input>
     </div>
     <div class="col" style="text-align: right; width:50%; display: inline-block">
       <button type="button" class="btn btn-success" (click)="open(defaultModal)" style="float: right">Add Employee</button>
