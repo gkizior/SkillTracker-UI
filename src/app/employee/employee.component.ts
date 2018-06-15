@@ -81,6 +81,8 @@ export class EmployeeComponent implements OnInit {
   progressAnimation = 'decreasing';
   positionClass = 'toast-top-right';
 
+  items: any = [];
+
   constructor(
     private appService: AppService,
     private route: ActivatedRoute,
@@ -254,6 +256,22 @@ export class EmployeeComponent implements OnInit {
     return newSkills;
   }
 
+  getQueryItems() {
+    const values = [];
+    let i = 0;
+    for (let j = 0; j < this.items.length; j++) {
+      if (this.items[j].value != null) {
+        values[i++] = this.items[j].value;
+      }
+    }
+    if (this.skills != null) {
+      for (let j = 0; j < this.skills.length; j++) {
+        values[i++] = this.getSkill(this.skills[j]);
+      }
+    }
+    return values;
+  }
+
   getSkill(id) {
     for (let i = 0; i < this.defaultOptions.length; i++) {
       if (id === this.defaultOptions[i].id) {
@@ -264,18 +282,17 @@ export class EmployeeComponent implements OnInit {
   }
 
   compSearch() {
-    const searchCriteria = (<HTMLInputElement>(
-      document.getElementById('searchBy')
-    )).value;
-    if (searchCriteria === '') {
+    const queries = new Object();
+    queries['strings'] = this.getQueryItems();
+    if (queries['strings'] === undefined || queries['strings'].length === 0) {
       return this.getAll();
     }
-    return this.http
-      .get(this.apiUrl + '/findEmployee/' + searchCriteria)
-      .pipe(map((res: Response) => res.json()))
-      .subscribe(employee => {
-        if (employee !== null) {
-          this.data = employee;
+    return this.httpclient
+      .post(this.apiUrl + '/findEmployees', queries, this.options)
+      .subscribe(employees => {
+        if (employees !== null) {
+          this.data = employees;
+          this.showToast('success', 'Searching by ' + queries['strings']);
         }
       });
   }
@@ -425,17 +442,7 @@ export class EmployeeComponent implements OnInit {
   }
 
   onChange(event) {
-    if (event.length === 0) {
-      this.getAll();
-    } else {
-      const skillObject = this.makeSkillJSON();
-      this.httpclient
-        .put(this.apiUrl + '/getSkillsDrop', skillObject, this.options)
-        .subscribe(result => {
-          this.data = result;
-          this.showToast('success', 'Searching by ' + skillObject['skills']);
-        });
-    }
+    this.compSearch();
   }
 
   getAll() {

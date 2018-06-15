@@ -51,12 +51,11 @@
 </div>
 
 <div *ngIf="!enteredId">
-  <div>
-    <div style="text-align: left; width:49%; display: inline-block">
-      <input (keyup.enter)="compSearch()" id="searchBy" placeholder="Search...">
-      <button class="btn btn-primary" (click)="compSearch()">Comprehensive Search</button>
+  <div class="row">
+    <div class="col" style="text-align: left; width:49%; display: inline-block">
+      <tag-input class="ngx-chips-primary" [(ngModel)]="items" [editable]="true" (ngModelChange)="onChange($event)"></tag-input>
     </div>
-    <div style="text-align: right; width:50%; display: inline-block">
+    <div class="col" style="text-align: right; width:50%; display: inline-block">
       <button type="button" class="btn btn-success" (click)="open(defaultModal)" style="float: right">Add Employee</button>
       <ss-multiselect-dropdown class="btn btn-info" [settings]="searchSettings" [texts]="myTexts" [options]="defaultOptions" [(ngModel)]="skills"
         (ngModelChange)="onChange($event)" style="float: right; padding: 0">
