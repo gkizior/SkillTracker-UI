@@ -108,7 +108,6 @@ export class EmployeeComponent implements OnInit {
       this.getOptions();
       if (this.enteredId) {
         this.employees = [];
-        // this.getOptions();
         if (!this.saved) {
           this.getEmployee();
         } else {
@@ -288,7 +287,7 @@ export class EmployeeComponent implements OnInit {
       return this.getAll();
     }
     return this.httpclient
-      .post(this.apiUrl + '/findEmployees', queries, this.options)
+      .post(this.apiUrl + '/getEmployees', queries, this.options)
       .subscribe(employees => {
         if (employees !== null) {
           this.data = employees;
@@ -464,11 +463,8 @@ export class EmployeeComponent implements OnInit {
       positionClass: this.positionClass,
       rtl: this.appService.isRTL
     };
-
-    // `newestOnTop` and `preventDuplicates` options must be set on global config
     this.toastrService.toastrConfig.newestOnTop = this.newestOnTop;
     this.toastrService.toastrConfig.preventDuplicates = this.preventDuplicates;
-
     this.toastrService[this.type](this.message || message, this.title, options);
   }
 }

@@ -118,7 +118,10 @@ export class SkillComponent implements OnInit {
         .post(this.apiUrl + '/api/skills/create', empIdsObject, this.options)
         .subscribe(result => {
           this.getSkillGraph();
-          this.showToast('success', 'Created ' + this.skill);
+          this.showToast(
+            'success',
+            'Created ' + this.skill + ' with employees'
+          );
         });
     } else {
       const skillObject = new Object();
@@ -127,10 +130,7 @@ export class SkillComponent implements OnInit {
         .post(this.apiUrl + '/api/skills', skillObject, this.options)
         .subscribe(result => {
           this.getSkillGraph();
-          this.showToast(
-            'success',
-            'Created ' + this.skill + ' with employees'
-          );
+          this.showToast('success', 'Created ' + this.skill);
         });
     }
   }
@@ -237,11 +237,8 @@ export class SkillComponent implements OnInit {
       positionClass: this.positionClass,
       rtl: this.appService.isRTL
     };
-
-    // `newestOnTop` and `preventDuplicates` options must be set on global config
     this.toastrService.toastrConfig.newestOnTop = this.newestOnTop;
     this.toastrService.toastrConfig.preventDuplicates = this.preventDuplicates;
-
     this.toastrService[this.type](this.message || message, this.title, options);
   }
 }
